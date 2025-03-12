@@ -25,10 +25,8 @@
               "src/assets"
             ],
             "styles": [
-              "src/assets/styles.css"
             ],
             "scripts": [
-              "src/assets/js/script.js"
             ]
           },
           "configurations": {
@@ -83,10 +81,8 @@
               "src/assets"
             ],
             "styles": [
-              "src/assets/styles.css"
             ],
             "scripts": [
-              "src/assets/js/script.js"
             ]
           }
         }
