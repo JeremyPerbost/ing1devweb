@@ -12,6 +12,7 @@ h2 {
 }
 .banner {
     background-color: rgb(75, 75, 75);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.6);
     padding-top: 2%;
     padding-bottom: 2%;
     border-radius: 13px;
@@ -19,7 +20,6 @@ h2 {
     justify-content: center;
     gap: 10px;
 }
-
 .banner button {
     background-color: rgb(92, 92, 92);
     color: white;
@@ -38,6 +38,43 @@ h2 {
     border-radius: 13px;
     cursor: pointer;
     display: none; /* Caché par défaut */
+}
+form{
+    background-color: rgb(97, 97, 97);
+    text-align: center;
+    border-radius: 13px;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.6);
+    padding: 2%;
+    max-width: 70%; 
+    margin: 20px auto; /* Centre le formulaire horizontalement */
+}
+input{
+    background-color: rgb(161, 161, 161);
+    font-size: 150%;
+    width: 36%;
+    border-radius: 5px;
+    color: white;
+}
+label{
+    font-size: 150%;
+}
+#categorie{
+    font-size: 150%;
+    background-color: rgb(161, 161, 161);
+    border-radius: 5px;
+    color: white;
+}
+#submit-btn{
+    font-size: 150%;
+    border-radius: 5px;
+    padding: 12px;
+    background-color: rgb(161, 161, 161);
+    color: white;
+    cursor: pointer;
+    margin-top: 50px;
+
 }
 @font-face {
     font-family: 'Montserrat_regular';

@@ -1,0 +1,32 @@
+<body>
+    <h1>DOMOVIA</h1>
+    <button class="menu-button">☰</button>
+    <div class="banner">
+        <button routerLink="/home">Accueil</button>
+        <button routerLink="/connexion">Se connecter</button>
+    </div>
+    <h2>Inscription</h2>
+        <form action="" method="get" class="form-example">
+            <label for="name">Pseudonyme :</label>
+            <input type="text" name="name" id="name" required /><br>
+
+            <label for="mail">Mail :</label>
+            <input type="email" name="mail" id="mail" required /><br>
+
+            <label for="password">Mot de passe :</label>
+            <input type="password" name="password" id="password" required /><br>
+
+            <label for="categorie">Type de membre :</label>
+            <select name="categorie" id="categorie" required><br>
+                <option value="">-- Sélectionnez un type --</option>
+                <option value="enfant">Enfant</option>
+                <option value="parent">Parent</option>
+                <option value="grand-parent">Grand-Parent</option>
+                <option value="invite">Invité</option>
+            </select><br>
+            <button type="submit" id="submit-btn"class="submit-btn">Soumettre mon inscription</button>
+        </form>
+    <footer>
+        <p>&copy; 2025 Domovia</p>
+    </footer>
+</body>
