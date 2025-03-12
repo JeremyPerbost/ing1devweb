@@ -41,11 +41,10 @@ h2 {
 }
 @font-face {
     font-family: 'Montserrat_regular';
-    src: url('../src/font/Montserrat/static/Montserrat-Regular.ttf') format('truetype');
+    src: url('font/Montserrat/static/Montserrat-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
-
 /* Mode mobile : cache la bannière et affiche le bouton menu */
 @media screen and (max-width: 600px) {
     .banner {

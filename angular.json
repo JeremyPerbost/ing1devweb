@@ -21,15 +21,15 @@
             ],
             "tsConfig": "tsconfig.app.json",
             "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
+              "src/favicon.ico",
+              "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/assets/styles.css"
             ],
-            "scripts": []
+            "scripts": [
+              "src/assets/js/script.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -79,15 +79,15 @@
             ],
             "tsConfig": "tsconfig.spec.json",
             "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
+              "src/favicon.ico",
+              "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/assets/styles.css"
             ],
-            "scripts": []
+            "scripts": [
+              "src/assets/js/script.js"
+            ]
           }
         }
       }
