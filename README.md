@@ -2,7 +2,7 @@
 Maison intelligente
 ## REGLES : 
 
-**A tout les participant :** 
+**⚠️:A tout les participant⚠️:** 
 
 Pour correctement lancer/tester le projet, vous devez avoir certains prérequis 
 
