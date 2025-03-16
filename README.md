@@ -14,6 +14,8 @@ Pour correctement lancer/tester le projet, vous devez avoir certains prérequis
 
 -Lancer le serveur : ``ng serve``
 
+-La base de donnée est gérée avec firebase. Assurez vous d'y avoir acces
+
 ## Participants :
 Jérémy
 Pierre
