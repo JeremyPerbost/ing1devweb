@@ -27,6 +27,7 @@
             "styles": [
             ],
             "scripts": [
+              "src/assets/js/banner.js"
             ]
           },
           "configurations": {
@@ -83,6 +84,7 @@
             "styles": [
             ],
             "scripts": [
+              "src/assets/js/banner.js"
             ]
           }
         }

@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FirebaseApp } from 'firebase/app';
-import { getFirestore, collection, addDoc } from 'firebase/firestore';  // Importer les fonctions Firestore
+import { getFirestore, collection, addDoc, query, where, getDocs} from 'firebase/firestore';  // Importer les fonctions Firestore
 
 
 @Injectable({
@@ -19,5 +18,28 @@ export class FirebaseService {
       console.error("Erreur d'ajout de l'utilisateur : ", e);
     }
   }
+  async authenticateUser(mail: string, password: string): Promise<boolean> {
+    try {
+      // Créer une requête pour rechercher un utilisateur par mail et mot de passe
+      const q = query(
+        collection(this.db, 'user'),
+        where('mail', '==', mail),
+        where('password', '==', password)
+      );
+      
+      const querySnapshot = await getDocs(q);
 
+      // Si un utilisateur est trouvé, la connexion est réussie
+      if (!querySnapshot.empty) {
+        console.log('Utilisateur trouvé');
+        return true;  // Connexion réussie
+      } else {
+        console.log('Utilisateur non trouvé');
+        return false; // Identifiants incorrects
+      }
+    } catch (e) {
+      console.error('Erreur d\'authentification :', e);
+      return false;
+    }
+  }
 }
