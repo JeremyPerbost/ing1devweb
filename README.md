@@ -6,7 +6,7 @@ Maison intelligente
 
 Pour correctement lancer/tester le projet, vous devez avoir certains prérequis 
 
--Installer Node.JS : ``npm install``
+-Installer Node.JS puis npm: ``npm install -g @angular/cli``
 
 -Installer Firebase : ``npm install firebase``
 
