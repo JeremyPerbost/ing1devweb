@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router'; // Importer RouterModule
 import { FirebaseService } from '../firebase.service';
-import { FormsModule } from '@angular/forms';  // Ajouter cet import
+import { FormsModule } from '@angular/forms';
+import { MainBannerComponent } from "../main-banner/main-banner.component";  // Ajouter cet import
 @Component({
   selector: 'app-inscription',
-  imports: [RouterModule, FormsModule],
+  imports: [RouterModule, FormsModule, MainBannerComponent],
   templateUrl: './inscription.component.html',
   styleUrl: '../../assets/styles.css'
 })
