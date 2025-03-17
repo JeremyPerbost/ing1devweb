@@ -3,11 +3,11 @@ import { MainBannerComponent } from "../main-banner/main-banner.component";
 import { PiedDePageComponent } from "../pied-de-page/pied-de-page.component";
 
 @Component({
-  selector: 'app-incorrect-connexion',
+  selector: 'app-create-house',
   imports: [MainBannerComponent, PiedDePageComponent],
-  templateUrl: './incorrect-connexion.component.html',
-  styleUrls: ['./incorrect-connexion.component.css', '../../assets/styles.css']
+  templateUrl: './create-house.component.html',
+  styleUrls: ['./create-house.component.css', '../../assets/styles.css']
 })
-export class IncorrectConnexionComponent {
+export class CreateHouseComponent {
 
 }

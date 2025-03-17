@@ -1,0 +1,49 @@
+.container {
+    margin-bottom: 10px;
+}
+.banner {
+    background-color: rgb(75, 75, 75);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.6);
+    padding-top: 2%;
+    padding-bottom: 2%;
+    border-radius: 13px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+.banner button {
+    background-color: rgb(92, 92, 92);
+    color: white;
+    font-size: 23px;
+    padding: 10px;
+    border-radius: 13px;
+}
+.menu-button {
+    background-color: rgb(92, 92, 92);
+    color: white;
+    font-size: 18px;
+    padding: 10px;
+    border-radius: 13px;
+    cursor: pointer;
+    display: none; /* Caché par défaut */
+}
+.status-icon{
+    margin-right: 20px;
+}
+/* Mode mobile : cache la bannière et affiche le bouton menu */
+@media screen and (max-width: 600px) {
+    .banner {
+        display: none; /* Caché par défaut */
+        flex-direction: column;
+    }
+
+    .menu-button {
+        display: block; /* Affiché sur mobile */
+        width: 100%;
+    }
+}
+
+/* Affichage de la bannière quand elle est active */
+.banner.show {
+    display: flex;
+}

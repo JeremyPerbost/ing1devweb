@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { MainBannerComponent } from "../main-banner/main-banner.component"; // Importer RouterModule
+import { MainBannerComponent } from "../main-banner/main-banner.component";
+import { PiedDePageComponent } from "../pied-de-page/pied-de-page.component"; // Importer RouterModule
 
 @Component({
   selector: 'app-home',
-  imports: [RouterModule, MainBannerComponent],
+  imports: [RouterModule, MainBannerComponent, PiedDePageComponent],
   templateUrl: './home.component.html',
   styleUrl: '../../assets/styles.css'
 })

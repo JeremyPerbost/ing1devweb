@@ -1,17 +1,27 @@
+<button class="menu-button">☰</button>
+<div class="banner" [ngClass]="{'show': isBannerVisible}">
+    <div class="container" *ngIf="est_connecter">
+        <span class="status-icon" style="color: green;">✅</span> <!-- Icône pour le statut connecté -->
+        <button (click)="deconnexion()">Se déconnecter</button>
+    </div>
+    <div class="container" *ngIf="!est_connecter">
+        <span class="status-icon" style="color: rgb(128, 0, 0);">❌</span> <!-- Icône pour le statut non connecté -->
+        <button routerLink="/connexion">Se connecter</button>
+        <button routerLink="/inscription">S'inscrire</button>
+    </div>
+    <div class="container">    
+        <button routerLink="/information">Informations</button>
+    </div>
+</div>
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-    let menuButton = document.querySelector(".menu-button");
-    let banner = document.querySelector(".banner");
-
-    menuButton.addEventListener("click", function () {
-        banner.classList.toggle("show"); // Affiche ou cache la bannière
+      let menuButton = document.querySelector(".menu-button");
+      let banner = document.querySelector(".banner");
+  
+      // Clic sur le bouton menu pour afficher/masquer la bannière
+      menuButton.addEventListener("click", function () {
+          banner.classList.toggle("show");
+      });
     });
-});
-
-</script>
-<button class="menu-button">☰</button>
-<div class="banner">
-    <button routerLink="/connexion">Se connecter</button>
-    <button routerLink="/information">Informations</button>
-    <button routerLink="/inscription">S'inscrire</button>
-</div>
+  </script>

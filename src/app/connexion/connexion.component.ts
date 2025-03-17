@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { Route, Router, RouterModule } from '@angular/router';
 import { FirebaseService } from '../firebase.service';
 import { FormsModule } from '@angular/forms';
-import { MainBannerComponent } from "../main-banner/main-banner.component"; // Importer MainBannerComponent
+import { MainBannerComponent } from "../main-banner/main-banner.component";
+import { PiedDePageComponent } from "../pied-de-page/pied-de-page.component"; // Importer MainBannerComponent
 
 @Component({
   selector: 'app-connexion',
-  imports: [RouterModule, FormsModule, MainBannerComponent],
+  imports: [RouterModule, FormsModule, MainBannerComponent, PiedDePageComponent],
   templateUrl: './connexion.component.html',
   styleUrls: ['../../assets/styles.css']
 })
