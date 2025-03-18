@@ -1,11 +1,13 @@
 <button class="menu-button">☰</button>
 <div class="banner" [ngClass]="{'show': isBannerVisible}">
+    <span class="status-icon">{{statut}}</span>
     <div class="container" *ngIf="est_connecter">
-        <span class="status-icon" style="color: green;">✅</span> <!-- Icône pour le statut connecté -->
+        <span>{{nom_utilisateur}}</span>
         <button (click)="deconnexion()">Se déconnecter</button>
+        <button routerLink="/admin">Admin</button>
+
     </div>
     <div class="container" *ngIf="!est_connecter">
-        <span class="status-icon" style="color: rgb(128, 0, 0);">❌</span> <!-- Icône pour le statut non connecté -->
         <button routerLink="/connexion">Se connecter</button>
         <button routerLink="/inscription">S'inscrire</button>
     </div>

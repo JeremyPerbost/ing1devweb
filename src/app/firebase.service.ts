@@ -55,7 +55,6 @@ export class FirebaseService {
       return false;  // En cas d'erreur, la connexion échoue
     }
   }
-
   /**
    * Déconnecter l'utilisateur
    */
