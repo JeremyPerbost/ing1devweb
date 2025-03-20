@@ -12,7 +12,7 @@ Pour correctement lancer/tester le projet, vous devez avoir certains prérequis
 
 -Installer les outils Firebase : ``npm install -g firebase-tools``
 
--D'autres fonctions angular doivent etre installées : faites un coup de ``npm install @Angular/fire`` et activés toutes les options si vous le souhaiter
+-D'autres fonctions angular doivent etre installées : faites un coup de ``ng add @Angular/fire`` et activés toutes les options si vous le souhaiter
 
 -Lancer le serveur : ``ng serve``
 
