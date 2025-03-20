@@ -2,11 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router'; // Importer RouterModule
 import { FirebaseService } from '../firebase.service';
 import { CommonModule } from '@angular/common'; // Importer CommonModule
-import { AngularFireModule } from '@angular/fire/compat';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
 @Component({
   selector: 'app-main-banner',
-  imports: [RouterModule, CommonModule, AngularFireModule],
+  imports: [RouterModule, CommonModule],
   templateUrl: './main-banner.component.html',
   styleUrls: ['../../assets/styles.css', './main-banner.component.css']
 })
@@ -15,7 +13,7 @@ export class MainBannerComponent implements OnInit {
   statut: string='❓';
   isBannerVisible: boolean = false;
   nom_utilisateur: string='';
-  constructor(private firebaseservice: FirebaseService, private afAuth: AngularFireAuth) {}
+  constructor(private firebaseservice: FirebaseService) {}
 
   ngOnInit() {
     // S'abonner au statut de connexion
