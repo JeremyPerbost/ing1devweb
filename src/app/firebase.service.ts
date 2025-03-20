@@ -9,6 +9,7 @@ export class FirebaseService {
   private db = getFirestore();  // Initialiser Firestore
   private est_connecter = new BehaviorSubject<boolean>(false);  // Valeur initiale : l'utilisateur est déconnecté
   est_connecter$ = this.est_connecter.asObservable();  // Observable pour les composants abonnés
+  lastLoggedInEmail: string ="nanae@gmail.com";
 
   constructor() { }
 
@@ -16,6 +17,37 @@ export class FirebaseService {
    * Ajouter un utilisateur dans Firestore
    * @param user - Les informations de l'utilisateur à ajouter
    */
+  /**
+   * Récupérer les informations de l'utilisateur connecté
+   * @returns Promise<any | null> - Retourne les informations de l'utilisateur ou null s'il n'est pas connecté
+   */
+  async getCurrentUser(): Promise<any | null> {
+    try {
+      if (!this.est_connecter.value) {
+        console.log("Aucun utilisateur connecté");
+        return null;
+      }
+
+      // Récupérer l'utilisateur connecté dans Firestore
+      const q = query(collection(this.db, 'user'), where('mail', '==', this.lastLoggedInEmail));
+
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        const userData = querySnapshot.docs[0].data();
+        console.log("Utilisateur connecté :", userData);
+        console.log("Email de l'utilisateur connecté :", this.lastLoggedInEmail);
+        return userData;
+      } else {
+        console.log("Utilisateur introuvable");
+        return null;
+      }
+    } catch (e) {
+      console.error("Erreur lors de la récupération de l'utilisateur :", e);
+      return null;
+    }
+  }
+
   async addUser(user: any): Promise<void> {
     try {
       const docRef = await addDoc(collection(this.db, "user"), user); // Ajouter un utilisateur dans la collection "user"
@@ -45,6 +77,7 @@ export class FirebaseService {
       if (!querySnapshot.empty) {
         console.log('Utilisateur trouvé');
         this.est_connecter.next(true);  // L'utilisateur est authentifié
+        this.lastLoggedInEmail = mail; // Stocker l'email de l'utilisateur connecté
         return true;  // Connexion réussie
       } else {
         console.log('Utilisateur non trouvé');

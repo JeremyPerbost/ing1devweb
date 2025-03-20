@@ -14,7 +14,6 @@ export class MainBannerComponent implements OnInit {
   isBannerVisible: boolean = false;
   nom_utilisateur: string='';
   constructor(private firebaseservice: FirebaseService) {}
-
   ngOnInit() {
     // S'abonner au statut de connexion
     this.firebaseservice.est_connecter$.subscribe(est_connecter => {
@@ -22,9 +21,13 @@ export class MainBannerComponent implements OnInit {
       console.log('Statut de la connexion:', this.est_connecter);  // Vérification de l'état de la connexion
       if(this.est_connecter==true){
         this.statut='✅';
-
+        this.firebaseservice.getCurrentUser().then((user) => {
+          this.nom_utilisateur='idhe';
+          this.nom_utilisateur = user.nom;
+        });
       }else{
         this.statut='❌';
+        this.nom_utilisateur='idhe';
       }
     });
   }

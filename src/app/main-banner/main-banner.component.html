@@ -1,8 +1,8 @@
 <button class="menu-button">☰</button>
 <div class="banner" [ngClass]="{'show': isBannerVisible}">
     <span class="status-icon">{{statut}}</span>
+    <span *ngIf="nom_utilisateur" class="nom">{{nom_utilisateur}}</span>
     <div class="container" *ngIf="est_connecter">
-        <span>{{nom_utilisateur}}</span>
         <button (click)="deconnexion()">Se déconnecter</button>
         <button routerLink="/admin">Admin</button>
 
