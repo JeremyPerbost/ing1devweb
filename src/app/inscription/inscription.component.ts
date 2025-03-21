@@ -20,7 +20,7 @@ export class InscriptionComponent {
     categorie: '',
     date_de_naissance: '',
     sexe: '',
-    level: -1,
+    level: -2,
     points: 0
   };
   erreur: String='';
@@ -28,8 +28,10 @@ export class InscriptionComponent {
   onSubmit_inscription(): void{
     this.firebaseService.addUser(this.user).then((result: String) => {
       this.erreur = result;
-      this.user = { name: '', mail: '', password: '', photoURL: '', categorie: '', date_de_naissance: '', sexe: '', level: -1, points: 0 };
-      //level -1 = utilisateur pas encore vérifié par l'admin
+      this.user = { name: '', mail: '', password: '', photoURL: '', categorie: '', date_de_naissance: '', sexe: '', level: -2, points: 0 };
+      //level -2 = utilisateur pas encore vérifié par l'admin
+      //level -1 = utilisateur en attente de validation du mail
+      //level 0 = utilisateur vérifié
     });
   }
 }

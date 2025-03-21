@@ -37,8 +37,13 @@ export class MonProfilComponent {
       this.userPrenom = user?.prenom || '';
       this.userpassword = user?.password || '';
     })
-    //si l'utilisateur n'est pas connecté : redirection vers /home
     this.firebaseservice.getCurrentUser().subscribe((user) => {
+      if (user.level <= -2) {
+        this.router.navigate(['/attente-confirmation-admin']);
+      }
+      if (user.level == -1) {
+        this.router.navigate(['/attente-confirmation-mail']);
+      }
       if (user === null) {
         this.router.navigate(['/home']);
       }

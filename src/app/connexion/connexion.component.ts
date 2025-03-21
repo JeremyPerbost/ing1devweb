@@ -8,7 +8,7 @@ import { InscriptionComponent } from "../inscription/inscription.component"; // 
 
 @Component({
   selector: 'app-connexion',
-  imports: [RouterModule, FormsModule, PiedDePageComponent],
+  imports: [RouterModule, FormsModule],
   templateUrl: './connexion.component.html',
   styleUrls: ['../../assets/styles.css']
 })

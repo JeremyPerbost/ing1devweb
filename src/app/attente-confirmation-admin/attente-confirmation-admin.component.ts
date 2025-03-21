@@ -3,11 +3,11 @@ import { MainBannerComponent } from "../main-banner/main-banner.component";
 import { PiedDePageComponent } from "../pied-de-page/pied-de-page.component";
 
 @Component({
-  selector: 'app-create-house',
+  selector: 'app-attente-confirmation-admin',
   imports: [MainBannerComponent, PiedDePageComponent],
-  templateUrl: './create-house.component.html',
-  styleUrls: ['./create-house.component.css', '../../assets/styles.css']
+  templateUrl: './attente-confirmation-admin.component.html',
+  styleUrls: ['./attente-confirmation-admin.component.css', '../../assets/styles.css']
 })
-export class CreateHouseComponent {
+export class AttenteConfirmationAdminComponent {
 
 }

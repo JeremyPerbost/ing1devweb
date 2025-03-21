@@ -7,8 +7,9 @@ import {InscriptionComponent} from './inscription/inscription.component'
 import {ConnexionComponent} from './connexion/connexion.component'
 import {ConfirmConnexionComponent} from './confirm-connexion/confirm-connexion.component'
 import {IncorrectConnexionComponent} from './incorrect-connexion/incorrect-connexion.component'
-import {CreateHouseComponent} from './create-house/create-house.component'
 import { MonProfilComponent } from "./mon-profil/mon-profil.component";
+import { AttenteConfirmationAdminComponent } from './attente-confirmation-admin/attente-confirmation-admin.component';
+import { AttenteConfirmationMailComponent } from './attente-confirmation-mail/attente-confirmation-mail.component';
 export const routes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },  // Redirection vers '/home'
     { path: 'home', component: HomeComponent },  // Assure-toi que HomeComponent existe
@@ -17,7 +18,8 @@ export const routes: Routes = [
     { path: 'connexion', component: ConnexionComponent},  // Route vers InformationComponent
     { path: 'confirm-connexion', component: ConfirmConnexionComponent},
     { path: 'incorrect-connexion', component: IncorrectConnexionComponent},
-    { path: 'create-house', component: CreateHouseComponent},
     { path: 'profil', component: MonProfilComponent},
+    { path: 'attente-confirmation-admin', component: AttenteConfirmationAdminComponent},
+    { path: 'attente-confirmation-mail', component: AttenteConfirmationMailComponent},
     { path: '**', component: PageInconnueComponent},  // Route vers InformationComponent
 ];
