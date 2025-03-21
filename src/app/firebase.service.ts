@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { getFirestore, collection, addDoc, query, where, getDocs, doc, updateDoc } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, query, where, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
@@ -56,15 +56,44 @@ export class FirebaseService {
    * Ajouter un utilisateur dans Firestore
    * @param user - Informations de l'utilisateur à ajouter
    */
-  async addUser(user: any): Promise<void> {
+  async addUser(user: any): Promise<String> {
     try {
+      if (!user.mail || !user.password || !user.date_de_naissance || !user.name || !user.sexe || !user.categorie) {
+        return "Tous les champs doivent être remplis";
+      }
+      if (!user.mail.endsWith('@gmail.com')) {
+        return "L'email doit se terminer par @gmail.com";
+      }
+      if (user.mail.length > 16) {
+        return "L'email ne doit pas dépasser 16 caractères";
+      }
+      if (user.password.length < 4 || user.password.length > 8) {
+        return "Le mot de passe doit comporter entre 4 et 8 caractères";
+      }
+      if (user.name.length > 8) {
+        return "Le nom ne doit pas dépasser 8 caractères";
+      }
+      const sqlInjectionPattern = /['";\-]/;
+      if (sqlInjectionPattern.test(user.mail) || sqlInjectionPattern.test(user.password) || sqlInjectionPattern.test(user.name)) {
+        return "Les champs ne doivent pas contenir de caractères spéciaux";
+      }
+      const q = query(collection(this.db, 'user'), where('mail', '==', user.mail));
+      const querySnapshot = await getDocs(q);
+      if (!querySnapshot.empty) {
+        return `L'email ${user.mail} existe déjà dans la base de données`;
+      }
+      const birthDate = new Date(user.date_de_naissance);
+      const today = new Date();
+      if (birthDate >= today) {
+        return "La date de naissance doit être antérieure à aujourd'hui";
+      }
       const docRef = await addDoc(collection(this.db, "user"), user);
-      console.log("Utilisateur ajouté avec l'ID: ", docRef.id);
+      return `${user.name} fait son entrée !😀`;
     } catch (e) {
       console.error("Erreur d'ajout de l'utilisateur : ", e);
+      return "Erreur d'ajout de l'utilisateur";
     }
   }
-
   /**
    * Authentifier un utilisateur en vérifiant le mail et le mot de passe
    * @param mail - Email de l'utilisateur
@@ -73,24 +102,17 @@ export class FirebaseService {
    */
   async authenticateUser(mail: string, password: string): Promise<boolean> {
     try {
-      const q = query(
-        collection(this.db, 'user'),
-        where('mail', '==', mail),
-        where('password', '==', password)
-      );
-
+      const q = query(collection(this.db, 'user'), where('mail', '==', mail), where('password', '==', password));
       const querySnapshot = await getDocs(q);
-
       if (!querySnapshot.empty) {
-        console.log('Utilisateur trouvé');
+        const userData = querySnapshot.docs[0].data();
+        await updateDoc(querySnapshot.docs[0].ref, { points: (userData['points'] || 0) + 1 });
         this.est_connecter.next(true);
-        this.lastLoggedInEmail = mail; // Stocker l'email
-        this.loadUser(); // Charger les infos utilisateur après connexion
+        this.lastLoggedInEmail = mail;
+        this.loadUser();
         return true;
-      } else {
-        console.log('Utilisateur non trouvé');
-        return false;
       }
+      return false;
     } catch (e) {
       console.error('Erreur d\'authentification :', e);
       return false;
@@ -106,6 +128,21 @@ export class FirebaseService {
   async updateProfilePhoto(userId: string, photoURL: string): Promise<void> {
     const userDocRef = doc(this.db, 'user', userId);
     await updateDoc(userDocRef, { photoURL: photoURL });
+  }
+
+  /**
+   * Mettre à jour les informations de l'utilisateur
+   * @param updatedUser - Les nouvelles informations de l'utilisateur
+   * @returns Promise<void>
+   */
+  async updateUser(updatedUser: any): Promise<void> {
+    const userId = await this.getCurrentUserID();
+    if (!userId) {
+      console.log("Impossible de mettre à jour l'utilisateur car l'ID est introuvable");
+      return;
+    }
+    const userDocRef = doc(this.db, 'user', userId);
+    await updateDoc(userDocRef, updatedUser);
   }
 
   /**
@@ -139,5 +176,16 @@ export class FirebaseService {
       console.log("Utilisateur non trouvé avec l'email :", this.lastLoggedInEmail);
       return null;
     }
+  }
+  async deleteUser(): Promise<void> {
+    const userId = await this.getCurrentUserID();
+    if (!userId) {
+      console.log("Impossible de supprimer l'utilisateur car l'ID est introuvable");
+      return;
+    }
+    const userDocRef = doc(this.db, 'user', userId);
+    await deleteDoc(userDocRef);
+    this.deconnexion(); // Déconnecter l'utilisateur après suppression
+    console.log("Utilisateur supprimé avec succès");
   }
 }

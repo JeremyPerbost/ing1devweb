@@ -36,12 +36,7 @@ input{
 label{
     font-size: 150%;
 }
-#categorie{
-    font-size: 150%;
-    background-color: rgb(161, 161, 161);
-    border-radius: 5px;
-    color: white;
-}
+
 #submit-btn{
     font-size: 150%;
     border-radius: 5px;

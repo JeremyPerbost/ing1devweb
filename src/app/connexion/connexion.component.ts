@@ -20,7 +20,7 @@ export class ConnexionComponent {
 
   constructor(private firebaseService: FirebaseService, private router: Router) {}
 
-  async onSubmit(): Promise<void> {
+  async onSubmit_connexion(): Promise<void> {
     if (this.user.mail && this.user.password) {
       console.log('Tentative de connexion avec les informations suivantes :');
       console.log('Mail:', this.user.mail);

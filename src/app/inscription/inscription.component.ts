@@ -4,13 +4,12 @@ import { FirebaseService } from '../firebase.service';
 import { FormsModule } from '@angular/forms';
 import { MainBannerComponent } from "../main-banner/main-banner.component";
 import { PiedDePageComponent } from "../pied-de-page/pied-de-page.component";
-import { ModifPhotoComponent } from "../modif-photo/modif-photo.component";
 import { ConnexionComponent } from "../connexion/connexion.component";  // Ajouter cet import
 @Component({
   selector: 'app-inscription',
-  imports: [RouterModule, FormsModule, MainBannerComponent, PiedDePageComponent, ModifPhotoComponent, ConnexionComponent],
+  imports: [RouterModule, FormsModule, MainBannerComponent, PiedDePageComponent, ConnexionComponent],
   templateUrl: './inscription.component.html',
-  styleUrl: '../../assets/styles.css'
+  styleUrls: ['../../assets/styles.css', 'inscription.component.css']
 })
 export class InscriptionComponent {
   user= {
@@ -18,11 +17,18 @@ export class InscriptionComponent {
     mail: '',
     password: '',
     photoURL: '',
-    categorie: ''
+    categorie: '',
+    date_de_naissance: '',
+    sexe: '',
+    level: 0,
+    points: 0
   };
+  erreur: String='';
   constructor(private firebaseService: FirebaseService){}
-  onSubmit(): void{
-    this.firebaseService.addUser(this.user);
-    this.user = { name: '', mail: '', password: '',photoURL: '', categorie: '' };
+  onSubmit_inscription(): void{
+    this.firebaseService.addUser(this.user).then((result: String) => {
+      this.erreur = result;
+      this.user = { name: '', mail: '', password: '', photoURL: '', categorie: '', date_de_naissance: '', sexe: '', level: 0, points: 0 };
+    });
   }
 }

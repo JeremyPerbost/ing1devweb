@@ -6,14 +6,16 @@
         <img [src]="photoURL" alt="Photo de profil" class="profile-photo" (click)="showModifPhoto = !showModifPhoto">
         <app-modif-photo *ngIf="showModifPhoto"></app-modif-photo>
         <button (click)="deconnexion()">Se déconnecter</button>
-        <button routerLink="/admin">Admin</button>
+        <button routerLink="/profil">Profil</button>
+    </div>
+    <div class="container">    
+        <button routerLink="/information">Informations</button>
+        <button routerLink="/home">Accueil</button>
     </div>
     <div class="container" *ngIf="!est_connecter">
         <button routerLink="/inscription">Se connecter</button>
     </div>
-    <div class="container">    
-        <button routerLink="/information">Informations</button>
-    </div>
+
 </div>
 
 <script>

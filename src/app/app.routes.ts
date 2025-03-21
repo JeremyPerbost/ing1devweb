@@ -8,7 +8,7 @@ import {ConnexionComponent} from './connexion/connexion.component'
 import {ConfirmConnexionComponent} from './confirm-connexion/confirm-connexion.component'
 import {IncorrectConnexionComponent} from './incorrect-connexion/incorrect-connexion.component'
 import {CreateHouseComponent} from './create-house/create-house.component'
-import { AdminComponent } from "./admin/admin.component";
+import { MonProfilComponent } from "./mon-profil/mon-profil.component";
 export const routes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },  // Redirection vers '/home'
     { path: 'home', component: HomeComponent },  // Assure-toi que HomeComponent existe
@@ -18,6 +18,6 @@ export const routes: Routes = [
     { path: 'confirm-connexion', component: ConfirmConnexionComponent},
     { path: 'incorrect-connexion', component: IncorrectConnexionComponent},
     { path: 'create-house', component: CreateHouseComponent},
-    { path: 'admin', component: AdminComponent},
+    { path: 'profil', component: MonProfilComponent},
     { path: '**', component: PageInconnueComponent},  // Route vers InformationComponent
 ];
