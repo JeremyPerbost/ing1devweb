@@ -19,6 +19,7 @@ export class MainBannerComponent implements OnInit, OnDestroy {
   nom_utilisateur: string = 'Inconnu';
   private subscriptions: Subscription = new Subscription(); // Stocker les abonnements
   photoURL: string = '../../assets/img/avatars/avatar_default.png'; // URL de la photo de profil
+  showModifPhoto: boolean =false; // Afficher le composant de modification de photo
 
   constructor(private firebaseservice: FirebaseService) {}
 

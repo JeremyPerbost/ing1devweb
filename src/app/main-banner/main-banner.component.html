@@ -2,15 +2,14 @@
 <div class="banner" [ngClass]="{'show': isBannerVisible}">
     <span class="status-icon">{{statut}}</span>
     <span class="nom">{{nom_utilisateur}}</span>
-    <img [src]="photoURL" alt="Photo de profil" class="profile-photo">
-    <app-modif-photo></app-modif-photo>
     <div class="container" *ngIf="est_connecter">
+        <img [src]="photoURL" alt="Photo de profil" class="profile-photo" (click)="showModifPhoto = !showModifPhoto">
+        <app-modif-photo *ngIf="showModifPhoto"></app-modif-photo>
         <button (click)="deconnexion()">Se déconnecter</button>
         <button routerLink="/admin">Admin</button>
     </div>
     <div class="container" *ngIf="!est_connecter">
-        <button routerLink="/connexion">Se connecter</button>
-        <button routerLink="/inscription">S'inscrire</button>
+        <button routerLink="/inscription">Se connecter</button>
     </div>
     <div class="container">    
         <button routerLink="/information">Informations</button>

@@ -1,8 +1,5 @@
 <body>
-    <h1>DOMOVIA</h1>
-    <app-main-banner></app-main-banner>
     <h2>Connexion</h2>
-    <p>Veuillez vous connecter via le formulaire suivant : </p>
     <form (submit)="onSubmit()" class="form-example">
         <label for="mail">Mail :</label>
         <input type="email" name="mail" id="mail" [(ngModel)]="user.mail" required/><br />
@@ -20,5 +17,4 @@
           Se connecter
         </button>
       </form>
-      <app-pied-de-page></app-pied-de-page>
 </body>
