@@ -1,40 +1,55 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { RouterModule } from '@angular/router'; // Importer RouterModule
 import { FirebaseService } from '../firebase.service';
 import { CommonModule } from '@angular/common'; // Importer CommonModule
+import { Subscription } from 'rxjs'; // Importer Subscription pour gérer les abonnements
+
 @Component({
   selector: 'app-main-banner',
+  standalone: true, // Permet d'utiliser directement les modules dans imports
   imports: [RouterModule, CommonModule],
   templateUrl: './main-banner.component.html',
   styleUrls: ['../../assets/styles.css', './main-banner.component.css']
 })
-export class MainBannerComponent implements OnInit {
+export class MainBannerComponent implements OnInit, OnDestroy {
   est_connecter: boolean = false;
-  statut: string='❓';
+  statut: string = '❓';
   isBannerVisible: boolean = false;
-  nom_utilisateur: string='';
+  nom_utilisateur: string = 'Inconnu';
+  private subscriptions: Subscription = new Subscription(); // Stocker les abonnements
+
   constructor(private firebaseservice: FirebaseService) {}
+
   ngOnInit() {
     // S'abonner au statut de connexion
-    this.firebaseservice.est_connecter$.subscribe(est_connecter => {
-      this.est_connecter = est_connecter;
-      console.log('Statut de la connexion:', this.est_connecter);  // Vérification de l'état de la connexion
-      if(this.est_connecter==true){
-        this.statut='✅';
-        this.firebaseservice.getCurrentUser().then((user) => {
-          this.nom_utilisateur='idhe';
-          this.nom_utilisateur = user.nom;
-        });
-      }else{
-        this.statut='❌';
-        this.nom_utilisateur='idhe';
-      }
-    });
+    this.subscriptions.add(
+      this.firebaseservice.est_connecter$.subscribe(est_connecter => {
+        this.est_connecter = est_connecter;
+        console.log('Statut de la connexion:', this.est_connecter);
+        if (this.est_connecter) {
+          this.statut = '✅';
+          this.subscriptions.add(
+            this.firebaseservice.getCurrentUser().subscribe((user) => {
+              this.nom_utilisateur = user?.name || '';
+            })
+          );
+        } else {
+          this.statut = '❌';
+          this.nom_utilisateur = 'Inconnu';
+        }
+      })
+    );
   }
+
   deconnexion() {
-    this.firebaseservice.deconnexion();  // Déconnecter l'utilisateur
+    this.firebaseservice.deconnexion(); // Déconnecter l'utilisateur
   }
+
   toggleBanner() {
-    this.isBannerVisible = !this.isBannerVisible;  // Bascule la visibilité de la bannière
+    this.isBannerVisible = !this.isBannerVisible; // Bascule la visibilité de la bannière
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe(); // Désabonnement pour éviter les fuites mémoire
   }
 }
