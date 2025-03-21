@@ -2,10 +2,11 @@
 <div class="banner" [ngClass]="{'show': isBannerVisible}">
     <span class="status-icon">{{statut}}</span>
     <span class="nom">{{nom_utilisateur}}</span>
+    <img [src]="photoURL" alt="Photo de profil" class="profile-photo">
+    <app-modif-photo></app-modif-photo>
     <div class="container" *ngIf="est_connecter">
         <button (click)="deconnexion()">Se déconnecter</button>
         <button routerLink="/admin">Admin</button>
-
     </div>
     <div class="container" *ngIf="!est_connecter">
         <button routerLink="/connexion">Se connecter</button>
@@ -26,4 +27,4 @@
           banner.classList.toggle("show");
       });
     });
-  </script>
+</script>

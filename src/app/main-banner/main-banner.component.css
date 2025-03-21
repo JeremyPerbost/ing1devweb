@@ -30,6 +30,13 @@
 .status-icon{
     margin-right: 20px;
 }
+.profile-photo {
+    width: 40px; /* Ajustez la taille selon vos besoins */
+    height: 40px; /* Ajustez la taille selon vos besoins */
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px; /* Espace entre la photo et le texte */
+}
 /* Mode mobile : cache la bannière et affiche le bouton menu */
 @media screen and (max-width: 600px) {
     .banner {

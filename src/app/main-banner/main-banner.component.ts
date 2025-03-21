@@ -2,12 +2,13 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { RouterModule } from '@angular/router'; // Importer RouterModule
 import { FirebaseService } from '../firebase.service';
 import { CommonModule } from '@angular/common'; // Importer CommonModule
-import { Subscription } from 'rxjs'; // Importer Subscription pour gérer les abonnements
+import { Subscription } from 'rxjs';
+import { ModifPhotoComponent } from "../modif-photo/modif-photo.component"; // Importer Subscription pour gérer les abonnements
 
 @Component({
   selector: 'app-main-banner',
   standalone: true, // Permet d'utiliser directement les modules dans imports
-  imports: [RouterModule, CommonModule],
+  imports: [RouterModule, CommonModule, ModifPhotoComponent],
   templateUrl: './main-banner.component.html',
   styleUrls: ['../../assets/styles.css', './main-banner.component.css']
 })
@@ -17,6 +18,7 @@ export class MainBannerComponent implements OnInit, OnDestroy {
   isBannerVisible: boolean = false;
   nom_utilisateur: string = 'Inconnu';
   private subscriptions: Subscription = new Subscription(); // Stocker les abonnements
+  photoURL: string = '../../assets/img/avatars/avatar_default.png'; // URL de la photo de profil
 
   constructor(private firebaseservice: FirebaseService) {}
 
@@ -31,11 +33,13 @@ export class MainBannerComponent implements OnInit, OnDestroy {
           this.subscriptions.add(
             this.firebaseservice.getCurrentUser().subscribe((user) => {
               this.nom_utilisateur = user?.name || '';
+              this.photoURL = user?.photoURL || this.photoURL;
             })
           );
         } else {
           this.statut = '❌';
           this.nom_utilisateur = 'Inconnu';
+          this.photoURL = '../../assets/img/avatars/avatar_default.png';
         }
       })
     );

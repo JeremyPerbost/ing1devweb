@@ -15,11 +15,12 @@ export class InscriptionComponent {
     name: '',
     mail: '',
     password: '',
+    photoURL: '',
     categorie: ''
   };
   constructor(private firebaseService: FirebaseService){}
   onSubmit(): void{
     this.firebaseService.addUser(this.user);
-    this.user = { name: '', mail: '', password: '', categorie: '' };
+    this.user = { name: '', mail: '', password: '',photoURL: '', categorie: '' };
   }
 }

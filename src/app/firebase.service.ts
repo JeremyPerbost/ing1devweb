@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { getFirestore, collection, addDoc, query, where, getDocs } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, query, where, getDocs, doc, updateDoc } from 'firebase/firestore';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
@@ -98,6 +98,17 @@ export class FirebaseService {
   }
 
   /**
+   * Mettre à jour la photo de profil de l'utilisateur
+   * @param userId - L'ID de l'utilisateur
+   * @param photoURL - L'URL de la nouvelle photo de profil
+   * @returns Promise<void>
+   */
+  async updateProfilePhoto(userId: string, photoURL: string): Promise<void> {
+    const userDocRef = doc(this.db, 'user', userId);
+    await updateDoc(userDocRef, { photoURL: photoURL });
+  }
+
+  /**
    * Déconnecter l'utilisateur
    */
   deconnexion(): void {
@@ -105,5 +116,28 @@ export class FirebaseService {
     this.userSubject.next(null); // Réinitialiser les infos utilisateur
     this.lastLoggedInEmail = null; // Supprimer l'email stocké
     console.log("Utilisateur déconnecté");
+  }
+
+  /**
+   * Récupérer l'ID de l'utilisateur connecté en utilisant son email
+   * @returns Promise<string | null> - L'ID de l'utilisateur ou null si non trouvé
+   */
+  async getCurrentUserID(): Promise<string | null> {
+    if (!this.lastLoggedInEmail) {
+      console.log("Aucun email d'utilisateur connecté trouvé");
+      return null;
+    }
+
+    const q = query(collection(this.db, 'user'), where('mail', '==', this.lastLoggedInEmail));
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      const userId = querySnapshot.docs[0].id;
+      console.log("ID de l'utilisateur connecté :", userId);
+      return userId;
+    } else {
+      console.log("Utilisateur non trouvé avec l'email :", this.lastLoggedInEmail);
+      return null;
+    }
   }
 }
