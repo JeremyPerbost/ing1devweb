@@ -67,11 +67,11 @@ export class FirebaseService {
       if (user.mail.length > 16) {
         return "L'email ne doit pas dépasser 16 caractères";
       }
-      if (user.password.length < 4 || user.password.length > 8) {
-        return "Le mot de passe doit comporter entre 4 et 8 caractères";
+      if (user.password.length < 4 || user.password.length > 16) {
+        return "Le mot de passe doit comporter entre 4 et 16 caractères";
       }
-      if (user.name.length > 8) {
-        return "Le nom ne doit pas dépasser 8 caractères";
+      if (user.name.length > 16) {
+        return "Le nom ne doit pas dépasser 16 caractères";
       }
       const sqlInjectionPattern = /['";\-]/;
       if (sqlInjectionPattern.test(user.mail) || sqlInjectionPattern.test(user.password) || sqlInjectionPattern.test(user.name)) {
@@ -135,14 +135,55 @@ export class FirebaseService {
    * @param updatedUser - Les nouvelles informations de l'utilisateur
    * @returns Promise<void>
    */
-  async updateUser(updatedUser: any): Promise<void> {
-    const userId = await this.getCurrentUserID();
-    if (!userId) {
-      console.log("Impossible de mettre à jour l'utilisateur car l'ID est introuvable");
-      return;
+  async updateUser(updatedUser: any): Promise<string> {
+    try {
+      if (!updatedUser.mail || !updatedUser.password || !updatedUser.date_de_naissance || !updatedUser.name || !updatedUser.sexe || !updatedUser.categorie) {
+        return "Tous les champs doivent être remplis";
+      }
+      if (!updatedUser.mail.endsWith('@gmail.com')) {
+        return "L'email doit se terminer par @gmail.com";
+      }
+      if (updatedUser.mail.length > 16) {
+        return "L'email ne doit pas dépasser 16 caractères";
+      }
+      if (updatedUser.nom.length > 16) {
+        return "Le nom ne doit pas dépasser 16 caractères";
+      }
+      if (updatedUser.prenom.length > 16) {
+        return "Le prenom ne doit pas dépasser 16 caractères";
+      }
+      if (updatedUser.password.length < 4 || updatedUser.password.length > 16) {
+        return "Le mot de passe doit comporter entre 4 et 16 caractères";
+      }
+      if (updatedUser.name.length > 16) {
+        return "Le nom ne doit pas dépasser 16 caractères";
+      }
+      const sqlInjectionPattern = /['";\-]/;
+      if (sqlInjectionPattern.test(updatedUser.mail) || sqlInjectionPattern.test(updatedUser.password) || sqlInjectionPattern.test(updatedUser.name)) {
+        return "Les champs ne doivent pas contenir de caractères spéciaux";
+      }
+      const birthDate = new Date(updatedUser.date_de_naissance);
+      const today = new Date();
+      if (birthDate >= today) {
+        return "La date de naissance doit être antérieure à aujourd'hui";
+      }
+      const existingUserQuery = query(collection(this.db, 'user'), where('mail', '==', updatedUser.mail));
+      const existingUserSnapshot = await getDocs(existingUserQuery);
+      if (!existingUserSnapshot.empty) {
+        return `L'email ${updatedUser.mail} existe déjà dans la base de données`;
+      }
+      const userId = await this.getCurrentUserID();
+      if (!userId) {
+        console.log("Impossible de mettre à jour l'utilisateur car l'ID est introuvable");
+        return "Impossible de mettre à jour l'utilisateur car l'ID est introuvable";
+      }
+      const userDocRef = doc(this.db, 'user', userId);
+      await updateDoc(userDocRef, updatedUser);
+      return "Utilisateur mis à jour avec succès";
+    } catch (e) {
+      console.error("Erreur de mise à jour de l'utilisateur : ", e);
+      return "Erreur de mise à jour de l'utilisateur";
     }
-    const userDocRef = doc(this.db, 'user', userId);
-    await updateDoc(userDocRef, updatedUser);
   }
 
   /**

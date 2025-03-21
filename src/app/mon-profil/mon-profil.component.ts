@@ -16,39 +16,50 @@ export class MonProfilComponent {
   //partie publique
   username: String = "Inconnu";
   usermail: String = "Inconnu";
-  userage: number = 0;
+  userdate_naissance: String = "Inconnu";
   usersexe: String = "Inconnu";
   usercategorie: String = "Inconnu";
   //partie privée
   userNom: String = "Inconnu";
   userPrenom: String = "Inconnu";
   userpassword: String= "Inconnu";
+  erreur: any;
   constructor(private firebaseservice: FirebaseService, private router: Router) { }
+  
   ngOnInit() {
     this.firebaseservice.getCurrentUser().subscribe((user) => {
       this.username = user?.name || '';
       this.usermail = user?.mail || '';
-      this.userage = user?.age || 0;
+      this.userdate_naissance = user?.date_de_naissance || 0;
       this.usersexe = user?.sexe || '';
       this.usercategorie = user?.categorie || '';
       this.userNom = user?.nom || '';
       this.userPrenom = user?.prenom || '';
       this.userpassword = user?.password || '';
     })
+    //si l'utilisateur n'est pas connecté : redirection vers /home
+    this.firebaseservice.getCurrentUser().subscribe((user) => {
+      if (user === null) {
+        this.router.navigate(['/home']);
+      }
+    });
   }
+
 
   onSubmit() {
     const updatedUser = {
       name: this.username,
       mail: this.usermail,
-      age: this.userage,
+      date_de_naissance: this.userdate_naissance,
       sexe: this.usersexe,
       categorie: this.usercategorie,
       nom: this.userNom,
       prenom: this.userPrenom,
       password: this.userpassword
     };
-    this.firebaseservice.updateUser(updatedUser);
+    this.firebaseservice.updateUser(updatedUser).then((result: String) => {
+      this.erreur = result;
+    });
   }
   onDeleteAccount() {
     if (confirm('Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.')) {

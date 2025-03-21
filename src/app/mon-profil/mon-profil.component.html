@@ -16,8 +16,8 @@
         </div>
 
         <div class="form-group">
-            <label for="userage">Âge :</label>
-            <input type="number" name="userage" id="userage" [(ngModel)]="userage" required />
+            <label for="userage">Date de naissance :</label>
+            <input type="date" name="userage" id="userage" [(ngModel)]="userdate_naissance" required />
         </div>
 
         <div class="form-group">
@@ -56,10 +56,10 @@
             <label for="userpassword">Mot de passe :</label>
             <input type="password" name="userpassword" id="userpassword" [(ngModel)]="userpassword" required />
         </div>
-
+        {{erreur}}<br>
         <button type="submit" id="submit-btn" class="submit-btn">Mettre à jour</button>
         <button type="button" id="delete-btn" class="delete-btn" (click)="onDeleteAccount()">Supprimer le compte</button>
+    
     </form>
-
     <app-pied-de-page></app-pied-de-page>
 </body>
