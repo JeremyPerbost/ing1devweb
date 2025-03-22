@@ -31,7 +31,12 @@ export class InscriptionComponent {
       this.user = { name: '', mail: '', password: '', photoURL: '', categorie: '', date_de_naissance: '', sexe: '', level: -2, points: 0 };
       //level -2 = utilisateur pas encore vérifié par l'admin
       //level -1 = utilisateur en attente de validation du mail
-      //level 0 = utilisateur vérifié
+      //level 0 = utilisateur débutant
+      //level 1 = utilisateur intermédiaire
+      //level 2 = utilisateur avancé
+      //level 3 = utilisateur expert
+      //Voici les niveaux : débutant, intermédiaire, avancé et
+      //expert. Un utilisateur simple
     });
   }
 }

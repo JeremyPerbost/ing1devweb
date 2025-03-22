@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { getFirestore, collection, addDoc, query, where, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
-import { BehaviorSubject } from 'rxjs';
+import { getFirestore, collection, addDoc, query, where, getDocs, doc, updateDoc, deleteDoc, getDoc } from 'firebase/firestore';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -51,7 +51,32 @@ export class FirebaseService {
   getCurrentUser() {
     return this.user$;
   }
-
+  /**
+   * Augmenter le niveau de l'utilisateur de 1
+   * @param id - L'ID de l'utilisateur
+   * @returns Promise<void>
+   */
+  async addLevel(mail: string): Promise<void> {
+    if (!mail) {
+      console.error("Erreur : l'email fourni est invalide");
+      return;
+    }
+    try {
+      const q = query(collection(this.db, 'user'), where('mail', '==', mail));
+      const querySnapshot = await getDocs(q);
+      if (!querySnapshot.empty) {
+        const userDocRef = querySnapshot.docs[0].ref;
+        const userData = querySnapshot.docs[0].data();
+        const currentLevel = userData['level'] !== undefined ? userData['level'] : 0;
+        await updateDoc(userDocRef, { level: currentLevel + 1 });
+        console.log(`Niveau de l'utilisateur ${mail} augmenté de 1`);
+      } else {
+        console.log(`Utilisateur avec l'email ${mail} non trouvé`);
+      }
+    } catch (e) {
+      console.error("Erreur lors de l'augmentation du niveau de l'utilisateur :", e);
+    }
+  }
   /**
    * Ajouter un utilisateur dans Firestore
    * @param user - Informations de l'utilisateur à ajouter
@@ -228,5 +253,37 @@ export class FirebaseService {
     await deleteDoc(userDocRef);
     this.deconnexion(); // Déconnecter l'utilisateur après suppression
     console.log("Utilisateur supprimé avec succès");
+  }
+
+  /**
+   * Récupérer les utilisateurs avec un niveau inférieur ou égal à 2
+   * @returns Promise<any[]>
+   */
+  async getUsersWithLevelLessThanOrEqualTo(level: number): Promise<any[]> {
+    const q = query(collection(this.db, 'user'), where('level', '<=', level));
+    const querySnapshot = await getDocs(q);
+    const users = querySnapshot.docs.map(doc => doc.data());
+    return users;
+  }
+
+  /**
+   * Récupérer un utilisateur par son email
+   * @param mail - Email de l'utilisateur
+   * @returns Observable<any>
+   */
+  getUserByMail(mail: string): Observable<any> {
+    const q = query(collection(this.db, 'user'), where('mail', '==', mail));
+    return new Observable(observer => {
+      getDocs(q).then(querySnapshot => {
+        if (!querySnapshot.empty) {
+          observer.next(querySnapshot.docs[0].data());
+        } else {
+          observer.next(null);
+        }
+        observer.complete();
+      }).catch(error => {
+        observer.error(error);
+      });
+    });
   }
 }

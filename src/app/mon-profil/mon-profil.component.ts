@@ -1,18 +1,17 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MainBannerComponent } from "../main-banner/main-banner.component";
 import { PiedDePageComponent } from "../pied-de-page/pied-de-page.component";
 import { FirebaseService } from '../firebase.service';
-import { NgForm } from '@angular/forms';
-import { NgModel } from '@angular/forms';
-import{FormsModule} from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+
 @Component({
   selector: 'app-mon-profil',
   imports: [MainBannerComponent, PiedDePageComponent, FormsModule],
   templateUrl: './mon-profil.component.html',
   styleUrls: ['../../assets/styles.css', 'mon-profil.component.css']
 })
-export class MonProfilComponent {
+export class MonProfilComponent implements OnInit {
   //partie publique
   username: String = "Inconnu";
   usermail: String = "Inconnu";
@@ -24,32 +23,45 @@ export class MonProfilComponent {
   userPrenom: String = "Inconnu";
   userpassword: String= "Inconnu";
   erreur: any;
-  constructor(private firebaseservice: FirebaseService, private router: Router) { }
-  
+
+  constructor(private firebaseservice: FirebaseService, private route: ActivatedRoute, private router: Router) { }
+
   ngOnInit() {
-    this.firebaseservice.getCurrentUser().subscribe((user) => {
+    this.route.queryParams.subscribe(params => {
+      const userMail = params['user'];
+      if (userMail) {
+        this.loadUserProfile(userMail);
+      } else {
+        this.loadCurrentUserProfile();
+      }
+    });
+  }
+
+  loadUserProfile(mail: string) {
+    this.firebaseservice.getUserByMail(mail).subscribe((user) => {
       this.username = user?.name || '';
       this.usermail = user?.mail || '';
-      this.userdate_naissance = user?.date_de_naissance || 0;
+      this.userdate_naissance = user?.date_de_naissance || '';
       this.usersexe = user?.sexe || '';
       this.usercategorie = user?.categorie || '';
       this.userNom = user?.nom || '';
       this.userPrenom = user?.prenom || '';
       this.userpassword = user?.password || '';
-    })
-    this.firebaseservice.getCurrentUser().subscribe((user) => {
-      if (user.level <= -2) {
-        this.router.navigate(['/attente-confirmation-admin']);
-      }
-      if (user.level == -1) {
-        this.router.navigate(['/attente-confirmation-mail']);
-      }
-      if (user === null) {
-        this.router.navigate(['/home']);
-      }
     });
   }
 
+  loadCurrentUserProfile() {
+    this.firebaseservice.getCurrentUser().subscribe((user) => {
+      this.username = user?.name || '';
+      this.usermail = user?.mail || '';
+      this.userdate_naissance = user?.date_de_naissance || '';
+      this.usersexe = user?.sexe || '';
+      this.usercategorie = user?.categorie || '';
+      this.userNom = user?.nom || '';
+      this.userPrenom = user?.prenom || '';
+      this.userpassword = user?.password || '';
+    });
+  }
 
   onSubmit() {
     const updatedUser = {
@@ -66,6 +78,7 @@ export class MonProfilComponent {
       this.erreur = result;
     });
   }
+
   onDeleteAccount() {
     if (confirm('Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.')) {
       this.firebaseservice.deleteUser().then(response => {
