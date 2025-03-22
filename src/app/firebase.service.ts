@@ -171,12 +171,6 @@ export class FirebaseService {
       if (updatedUser.mail.length > 16) {
         return "L'email ne doit pas dépasser 16 caractères";
       }
-      if (updatedUser.nom.length > 16) {
-        return "Le nom ne doit pas dépasser 16 caractères";
-      }
-      if (updatedUser.prenom.length > 16) {
-        return "Le prenom ne doit pas dépasser 16 caractères";
-      }
       if (updatedUser.password.length < 4 || updatedUser.password.length > 16) {
         return "Le mot de passe doit comporter entre 4 et 16 caractères";
       }
@@ -192,17 +186,12 @@ export class FirebaseService {
       if (birthDate >= today) {
         return "La date de naissance doit être antérieure à aujourd'hui";
       }
-      const existingUserQuery = query(collection(this.db, 'user'), where('mail', '==', updatedUser.mail));
-      const existingUserSnapshot = await getDocs(existingUserQuery);
-      if (!existingUserSnapshot.empty) {
-        return `L'email ${updatedUser.mail} existe déjà dans la base de données`;
+      const q = query(collection(this.db, 'user'), where('mail', '==', updatedUser.mail));
+      const querySnapshot = await getDocs(q);
+      if (querySnapshot.empty) {
+        return "Utilisateur non trouvé";
       }
-      const userId = await this.getCurrentUserID();
-      if (!userId) {
-        console.log("Impossible de mettre à jour l'utilisateur car l'ID est introuvable");
-        return "Impossible de mettre à jour l'utilisateur car l'ID est introuvable";
-      }
-      const userDocRef = doc(this.db, 'user', userId);
+      const userDocRef = querySnapshot.docs[0].ref;
       await updateDoc(userDocRef, updatedUser);
       return "Utilisateur mis à jour avec succès";
     } catch (e) {

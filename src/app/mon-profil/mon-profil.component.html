@@ -6,15 +6,13 @@
     <form (submit)="onSubmit()" class="form-example" novalidate>
         <h3>Informations Publiques</h3>
         <div class="form-group">
+            <label for="usermail">Mail :</label>
+            {{usermail}}
+        </div>
+        <div class="form-group">
             <label for="username">Pseudonyme : </label>
             <input type="text" name="username" id="username" [(ngModel)]="username" required />
         </div>
-
-        <div class="form-group">
-            <label for="usermail">Mail :</label>
-            <input type="email" name="usermail" id="usermail" [(ngModel)]="usermail" required />
-        </div>
-
         <div class="form-group">
             <label for="userage">Date de naissance :</label>
             <input type="date" name="userage" id="userage" [(ngModel)]="userdate_naissance" required />
