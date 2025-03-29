@@ -1,4 +1,4 @@
-<button class="menu-button">☰</button>
+<button class="menu-button" (click)="toggleBanner()">☰</button>
 <div class="banner" [ngClass]="{'show': isBannerVisible}">
     <span class="status-icon">{{statut}}</span>
     <span class="nom">{{nom_utilisateur}}</span>

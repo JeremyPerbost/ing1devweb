@@ -29,7 +29,6 @@ export class AdminComponent implements OnInit {
     });
     this.loadHistory();
   }
-
   Valider_Inscription(mail: any, level: any) {
     console.log("Valider_Inscription");
     this.firebaseservice.addLevel(mail);
