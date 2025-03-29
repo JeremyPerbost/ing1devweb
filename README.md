@@ -16,6 +16,8 @@ Pour correctement lancer/tester le projet, vous devez avoir certains prérequis
 
 -D'autres fonctions angular doivent etre installées : faites un coup de ``ng add @Angular/fire`` et activés toutes les options si vous le souhaiter
 
+- Installer e-mailjs pour gérer les mails : ``npm install emailjs-com --save``
+
 -Lancer le serveur : ``ng serve``
 
 ## 📖 INFORMATIONS 📖
