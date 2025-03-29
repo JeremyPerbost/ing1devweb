@@ -10,6 +10,7 @@ import {IncorrectConnexionComponent} from './incorrect-connexion/incorrect-conne
 import { MonProfilComponent } from "./mon-profil/mon-profil.component";
 import { AttenteConfirmationAdminComponent } from './attente-confirmation-admin/attente-confirmation-admin.component';
 import { AttenteConfirmationMailComponent } from './attente-confirmation-mail/attente-confirmation-mail.component';
+import { ConfirmMailComponent } from './confirm-mail/confirm-mail.component';
 export const routes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },  // Redirection vers '/home'
     { path: 'home', component: HomeComponent },  // Assure-toi que HomeComponent existe
@@ -21,5 +22,6 @@ export const routes: Routes = [
     { path: 'profil', component: MonProfilComponent},
     { path: 'attente-confirmation-admin', component: AttenteConfirmationAdminComponent},
     { path: 'attente-confirmation-mail', component: AttenteConfirmationMailComponent},
+    { path: 'increment-level', component: ConfirmMailComponent},
     { path: '**', component: PageInconnueComponent},  // Route vers InformationComponent
 ];

@@ -1,11 +1,13 @@
 <div *ngIf="isadmin">
-  <h2>Liste des utilisateurs</h2>
+  <h2>Module d'administration</h2>
+  <h3>Liste des utilisateurs</h3>
   <table>
     <thead>
       <tr>
         <th>Pseudonyme</th>
         <th>Mail</th>
         <th>Etat</th>
+        <th>Niveau</th>
       </tr>
     </thead>
     <tbody>
@@ -13,6 +15,12 @@
         <td>{{ user.name }}</td>
         <td>{{ user.mail }}</td>
         <td>{{ user.etat }}</td>
+        <td>  <button (click)="changeLevel(user, -1)">-1</button>
+              {{ user.level <= 0 ? 0 : user.level }}
+              <button (click)="changeLevel(user, 1)">+1</button>
+              points:
+              {{user.points}}
+        </td>
         <td>
             <button *ngIf="user.level<=-2" (click)="Valider_Inscription(user.mail, user.level)">valider l'inscription</button>
             <button *ngIf="user.level<=2" (click)="ModifierProfil(user.mail)">Modifier le profil</button>
@@ -20,6 +28,27 @@
       </tr>
     </tbody>
   </table>
+  <h3>Historique de connexions</h3>
+  <table>
+    <thead>
+      <th>Pseudonyme</th>
+      <th>Mail</th>
+      <th>Connexion/Deconnexion</th>
+      <th>Horaire</th>
+    </thead>
+    <tbody>
+      <tr *ngFor="let history_log of history_logs">
+        <td>{{history_log.name}}</td>
+        <td>{{history_log.mail}}</td>
+        <td [ngStyle]="{ color: history_log.type === 'connexion' ? 'green' : 'red' }">
+          {{ history_log.type }}
+        </td>
+        <td>{{ history_log.temps | date:'short' }}</td>
+      </tr>
+    </tbody>    
+  </table>
+  <button (click)="EffacerHistorique();">Effacer l'historique</button>
+
 </div>
 <div *ngIf="!isadmin">
   <p>Vous n'avez pas les droits d'accès à cette page.</p>

@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { getFirestore, collection, addDoc, query, where, getDocs, doc, updateDoc, deleteDoc, getDoc } from 'firebase/firestore';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-
+import emailjs from 'emailjs-com';
+import { v4 as uuidv4 } from 'uuid';  // Importer uuid pour générer des tokens uniques
+import { Timestamp } from 'firebase/firestore';
 @Injectable({
   providedIn: 'root'
 })
@@ -89,14 +91,14 @@ export class FirebaseService {
       if (!user.mail.endsWith('@gmail.com')) {
         return "L'email doit se terminer par @gmail.com";
       }
-      if (user.mail.length > 16) {
-        return "L'email ne doit pas dépasser 16 caractères";
+      if (user.mail.length > 30) {
+        return "L'email ne doit pas dépasser 30 caractères";
       }
-      if (user.password.length < 4 || user.password.length > 16) {
-        return "Le mot de passe doit comporter entre 4 et 16 caractères";
+      if (user.password.length < 4 || user.password.length > 30) {
+        return "Le mot de passe doit comporter entre 4 et 30 caractères";
       }
-      if (user.name.length > 16) {
-        return "Le nom ne doit pas dépasser 16 caractères";
+      if (user.name.length > 30) {
+        return "Le nom ne doit pas dépasser 30 caractères";
       }
       const sqlInjectionPattern = /['";\-]/;
       if (sqlInjectionPattern.test(user.mail) || sqlInjectionPattern.test(user.password) || sqlInjectionPattern.test(user.name)) {
@@ -131,6 +133,7 @@ export class FirebaseService {
       const querySnapshot = await getDocs(q);
       if (!querySnapshot.empty) {
         const userData = querySnapshot.docs[0].data();
+        await this.logUserHistory(userData, 'connexion');
         await updateDoc(querySnapshot.docs[0].ref, { points: (userData['points'] || 0) + 1 });
         this.est_connecter.next(true);
         this.lastLoggedInEmail = mail;
@@ -143,7 +146,37 @@ export class FirebaseService {
       return false;
     }
   }
-
+  
+  async logUserHistory(userData: any, eventType: 'connexion' | 'déconnexion'): Promise<void> {
+    try {
+      const db = getFirestore();
+      const historiqueData = {
+        temps: Timestamp.now(),  // Horodatage de l'événement
+        mail: userData.mail,   // L'email de l'utilisateur
+        pseudo: userData.name || 'Inconnu',  // Pseudo de l'utilisateur
+        type: eventType,  // Type d'événement, soit 'connexion' soit 'déconnexion'
+      };
+      await addDoc(collection(db, 'historique'), historiqueData);
+      console.log(`Historique de ${eventType} ajouté avec succès.`);
+    } catch (error) {
+      console.error(`Erreur lors de l'enregistrement de l'historique de ${eventType} :`, error);
+    }
+  }
+  //recuperer l'historique
+  async getHistory_logs(): Promise<any[]> {
+    const q = query(collection(this.db, 'historique'));
+    const querySnapshot = await getDocs(q);
+    const historiques = querySnapshot.docs.map(doc => doc.data());
+    return historiques;
+  }
+  async EffacerHistorique() {
+    const db = getFirestore();
+    const querySnapshot = await getDocs(collection(db, 'historique')); // Récupère tous les documents de la collection 'historique'
+      querySnapshot.forEach(async (docSnap) => {
+      await deleteDoc(doc(db, 'historique', docSnap.id)); // Supprime le document de la collection
+    });
+    console.log("Historique effacé avec succès.");
+  }
   /**
    * Mettre à jour la photo de profil de l'utilisateur
    * @param userId - L'ID de l'utilisateur
@@ -168,14 +201,14 @@ export class FirebaseService {
       if (!updatedUser.mail.endsWith('@gmail.com')) {
         return "L'email doit se terminer par @gmail.com";
       }
-      if (updatedUser.mail.length > 16) {
-        return "L'email ne doit pas dépasser 16 caractères";
+      if (updatedUser.mail.length > 30) {
+        return "L'email ne doit pas dépasser 30 caractères";
       }
-      if (updatedUser.password.length < 4 || updatedUser.password.length > 16) {
-        return "Le mot de passe doit comporter entre 4 et 16 caractères";
+      if (updatedUser.password.length < 4 || updatedUser.password.length > 30) {
+        return "Le mot de passe doit comporter entre 4 et 30 caractères";
       }
-      if (updatedUser.name.length > 16) {
-        return "Le nom ne doit pas dépasser 16 caractères";
+      if (updatedUser.name.length > 30) {
+        return "Le nom ne doit pas dépasser 30 caractères";
       }
       const sqlInjectionPattern = /['";\-]/;
       if (sqlInjectionPattern.test(updatedUser.mail) || sqlInjectionPattern.test(updatedUser.password) || sqlInjectionPattern.test(updatedUser.name)) {
@@ -204,6 +237,7 @@ export class FirebaseService {
    * Déconnecter l'utilisateur
    */
   deconnexion(): void {
+    this.logUserHistory(this.userSubject.value, 'déconnexion');
     this.est_connecter.next(false);
     this.userSubject.next(null); // Réinitialiser les infos utilisateur
     this.lastLoggedInEmail = null; // Supprimer l'email stocké
@@ -254,7 +288,6 @@ export class FirebaseService {
     const users = querySnapshot.docs.map(doc => doc.data());
     return users;
   }
-
   /**
    * Récupérer un utilisateur par son email
    * @param mail - Email de l'utilisateur
@@ -275,4 +308,84 @@ export class FirebaseService {
       });
     });
   }
+  envoyer_mail(email: any) {
+    const token = uuidv4();  // Générer un token unique pour chaque utilisateur
+    const lien = `http://localhost:4200/increment-level?token=${token}`;  // Créer le lien unique avec le token
+  
+    // Stocker le token dans Firestore avec une propriété `used` initialisée à false
+    this.storeToken(email, token);  // Une méthode qui enregistre ce token dans Firestore
+  
+    emailjs.send("service_p65hfb5", "template_a2t96in", {
+      lien: lien,  // Lien contenant le token unique
+      mail: email,
+    }, 'H9gBdFM3Vx43S4MDN')  // Utilise ta clé publique ici
+    .then((response) => {
+      console.log('Email envoyé à :', email, 'réponse : ', response);
+    })
+    .catch((error) => {
+      console.error('Erreur de l\'envoi du mail à :', email, 'réponse', error);
+    });
+  }
+/**
+ * Stocker un token dans Firestore pour l'utilisateur
+ * @param email - L'email de l'utilisateur
+ * @param token - Le token unique à stocker
+ */
+  async storeToken(email: string, token: string) {
+    try {
+      // Chercher l'utilisateur par email dans la base de données Firestore
+      const q = query(collection(this.db, 'user'), where('mail', '==', email));
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        const userDocRef = querySnapshot.docs[0].ref;
+
+        // Ajouter le token dans Firestore sous l'utilisateur
+        await updateDoc(userDocRef, {
+          token: token,  // Token généré pour l'utilisateur
+          tokenUsed: false  // Indiquer que ce token n'est pas encore utilisé
+        });
+
+        console.log(`Token pour l'utilisateur ${email} enregistré.`);
+      } else {
+        console.log(`Utilisateur avec l'email ${email} non trouvé`);
+      }
+    } catch (error) {
+      console.error('Erreur lors de l\'enregistrement du token :', error);
+    }
+  }
+/**
+ * Vérifier le token et incrémenter le niveau de l'utilisateur
+ * @param token - Le token unique contenu dans l'URL
+ * @returns Promise<boolean> - Retourne true si le niveau a été augmenté, false sinon
+ */
+  async incrementLevelByToken(token: string): Promise<boolean> {
+    try {
+      // Rechercher l'utilisateur par token
+      const q = query(collection(this.db, 'user'), where('token', '==', token));
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        const userDocRef = querySnapshot.docs[0].ref;
+        const userData = querySnapshot.docs[0].data();
+        
+        // Vérifier si le token a déjà été utilisé
+        if (userData['tokenUsed']) {
+          return false;  // Le token a déjà été utilisé
+        }
+        // Incrémenter le niveau de l'utilisateur
+        const currentLevel = userData['level'] || 0;
+        await updateDoc(userDocRef, { level: currentLevel + 1, tokenUsed: true });
+
+        console.log(`Niveau de l'utilisateur ${userData['mail']} augmenté.`);
+        return true;
+      } else {
+        return false;  // Le token est invalide
+      }
+    } catch (error) {
+      console.error('Erreur lors de l\'incrémentation du niveau :', error);
+      return false;
+    }
+  }
+
 }

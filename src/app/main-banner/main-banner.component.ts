@@ -48,6 +48,7 @@ export class MainBannerComponent implements OnInit, OnDestroy {
 
   deconnexion() {
     this.firebaseservice.deconnexion(); // Déconnecter l'utilisateur
+
   }
 
   toggleBanner() {
