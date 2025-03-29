@@ -20,9 +20,9 @@ Pour correctement lancer/tester le projet, vous devez avoir certains prérequis
 
 ## 📖 INFORMATIONS 📖
 
--Chaque module est stocké dans ``src/app``
+-Chaque component est stocké dans ``src/app``
 
--``index.html`` contient ``app.component.html`` qui contient tout les modules !
+-``index.html`` contient ``app.component.html`` qui contient tout les components !
 
 -le changement de page est gérer avec le fichier ``app.routes.ts``
 
