@@ -31,7 +31,7 @@ export class AdminComponent implements OnInit {
   }
   Valider_Inscription(mail: any, level: any) {
     console.log("Valider_Inscription");
-    this.firebaseservice.addLevel(mail);
+    this.firebaseservice.addLevel(mail, 1);
     this.firebaseservice.envoyer_mail(mail);
     this.loadUsers();
   }

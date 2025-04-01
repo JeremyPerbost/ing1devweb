@@ -202,7 +202,7 @@ export class userService{
         });
         console.log("Historique effacé avec succès.");
     }
-    async addLevel(mail: string): Promise<void> {
+    async addLevel(mail: string, number: number): Promise<void> {
         if (!mail) {
             console.error("Erreur : l'email fourni est invalide");
             return;
@@ -214,14 +214,33 @@ export class userService{
             const userDocRef = querySnapshot.docs[0].ref;
             const userData = querySnapshot.docs[0].data();
             const currentLevel = userData['level'] !== undefined ? userData['level'] : 0;
-            await updateDoc(userDocRef, { level: currentLevel + 1 });
-            console.log(`Niveau de l'utilisateur ${mail} augmenté de 1`);
+            await updateDoc(userDocRef, { level: currentLevel + number });
+            console.log(`Niveau de l'utilisateur ${mail} augmenté de ${number}`);
             } else {
             console.log(`Utilisateur avec l'email ${mail} non trouvé`);
             }
         } catch (e) {
             console.error("Erreur lors de l'augmentation du niveau de l'utilisateur :", e);
         }
+    }
+    async reinitialiser_progression(mail: string): Promise<void> {
+      if (!mail) {
+        console.error("Erreur : l'email fourni est invalide");
+        return;
+      }
+      try {
+        const q = query(collection(this.db, 'user'), where('mail', '==', mail));
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+          const userDocRef = querySnapshot.docs[0].ref;
+          await updateDoc(userDocRef, { level: 0, points: 0 });
+          console.log(`Progression de l'utilisateur ${mail} réinitialisée.`);
+        } else {
+          console.log(`Utilisateur avec l'email ${mail} non trouvé.`);
+        }
+      } catch (e) {
+        console.error("Erreur lors de la réinitialisation de la progression :", e);
+      }
     }
     async getUsersWithLevelLessThanOrEqualTo(level: number): Promise<any[]> {
         const q = query(collection(this.db, 'user'), where('level', '<=', level));

@@ -57,7 +57,17 @@
         {{erreur}}<br>
         <button type="submit" id="submit-btn" class="submit-btn">Mettre à jour</button>
         <button type="button" id="delete-btn" class="delete-btn" (click)="onDeleteAccount()">Supprimer le compte</button>
-    
     </form>
+    <div class="consult_niveau">
+        <div>
+            <p>Level : {{level}}</p>
+            <button *ngIf="level > -1 && level < 3" (click)="changer_niveau(usermail, 1)">+</button>
+        </div>
+        <div>
+            <p>Points : {{points}}</p>
+        </div>
+        <button *ngIf="level>-1" (click)="reinitialiser_niveau(usermail)">reinitialiser la progression</button>
+    </div>
+    {{message_level}}
     <app-pied-de-page></app-pied-de-page>
 </body>

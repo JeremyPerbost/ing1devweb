@@ -48,10 +48,12 @@ export class FirebaseService {
     return this.userService.EffacerHistorique();
   }
 
-  async addLevel(mail: string): Promise<void> {
-    return this.userService.addLevel(mail);
+  async addLevel(mail: string, number: number): Promise<void> {
+    return this.userService.addLevel(mail, number);
   }
-
+  async reinitialiser_progression(mail: string): Promise<void>{
+    return this.userService.reinitialiser_progression(mail);
+  }
   async incrementLevelByToken(token: string): Promise<boolean> {
     return this.userService.incrementLevelByToken(token);
   }
