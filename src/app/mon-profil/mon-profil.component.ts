@@ -31,19 +31,23 @@ export class MonProfilComponent implements OnInit {
   constructor(private firebaseservice: FirebaseService, private route: ActivatedRoute, private router: Router) { }
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
-      const userMail = params['user'];
+      const userMail = params['user'];  // Récupère le paramètre 'user' dans l'URL
+      console.log("Paramètre user récupéré:", userMail); // Vérifier que l'email est bien récupéré
+      
       if (userMail) {
+        // Si un email est passé dans les paramètres, charger le profil de cet utilisateur
         this.loadUserProfile(userMail);
       } else {
+        // Sinon, charger le profil de l'utilisateur actuel
+        console.log("Chargement du profil actuel");
         this.loadCurrentUserProfile();
       }
     });
-  
-    // Recharger le profil de l'utilisateur lors de l'initialisation
-    this.loadUserProfile(this.usermail);
   }
   
+  
   loadUserProfile(mail: string) {
+    console.log(mail);
     this.firebaseservice.getUserByMail(mail).subscribe((user) => {
       this.username = user?.name || '';
       this.usermail = user?.mail || '';

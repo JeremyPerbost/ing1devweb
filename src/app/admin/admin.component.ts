@@ -20,7 +20,7 @@ export class AdminComponent implements OnInit {
   ngOnInit() {
     // Vérifier si l'utilisateur est un administrateur
     this.firebaseservice.getCurrentUser().subscribe((user: any) => {
-      if (user.level >= 3) {
+      if (user.level > 2) {
         this.isadmin = true;
         this.loadUsers();
       } else {
