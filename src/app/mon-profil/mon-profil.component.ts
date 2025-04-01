@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MainBannerComponent } from "../main-banner/main-banner.component";
 import { PiedDePageComponent } from "../pied-de-page/pied-de-page.component";
-import { FirebaseService } from '../firebase.service';
+import { FirebaseService } from '../services/firebase.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
