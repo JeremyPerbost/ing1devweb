@@ -11,6 +11,7 @@ import { MonProfilComponent } from "./mon-profil/mon-profil.component";
 import { AttenteConfirmationAdminComponent } from './attente-confirmation-admin/attente-confirmation-admin.component';
 import { AttenteConfirmationMailComponent } from './attente-confirmation-mail/attente-confirmation-mail.component';
 import { ConfirmMailComponent } from './confirm-mail/confirm-mail.component';
+import { PageObjetComponent } from './page-objet/page-objet.component';
 export const routes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },  // Redirection vers '/home'
     { path: 'home', component: HomeComponent },  // Assure-toi que HomeComponent existe
@@ -23,5 +24,6 @@ export const routes: Routes = [
     { path: 'attente-confirmation-admin', component: AttenteConfirmationAdminComponent},
     { path: 'attente-confirmation-mail', component: AttenteConfirmationMailComponent},
     { path: 'increment-level', component: ConfirmMailComponent},
-    { path: '**', component: PageInconnueComponent},  // Route vers InformationComponent
+    { path : 'page-objet', component : PageObjetComponent} ,
+    { path: '**', component: PageInconnueComponent},
 ];

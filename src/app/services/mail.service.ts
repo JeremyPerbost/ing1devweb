@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { inject } from '@angular/core';
+import { FirebaseApp } from '@angular/fire/app';
 import { getFirestore, collection, addDoc, query, where, getDocs, doc, updateDoc, deleteDoc, getDoc } from 'firebase/firestore';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import emailjs from 'emailjs-com';
@@ -8,8 +10,8 @@ import { Timestamp } from 'firebase/firestore';
     providedIn: 'root'
 })
 export class mailService{
-    private db = getFirestore();  // Initialisation de Firestore
-    async storeToken(email: string, token: string) {
+  private db = getFirestore(inject(FirebaseApp));  // Injection de FirebaseApp
+  async storeToken(email: string, token: string) {
         try {
           // Chercher l'utilisateur par email dans la base de données Firestore
           const q = query(collection(this.db, 'user'), where('mail', '==', email));

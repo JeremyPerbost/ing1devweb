@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms'; 
 
 @Component({
@@ -7,7 +8,7 @@ import { FormsModule } from '@angular/forms';
   standalone: true,  
   templateUrl: './barre-recherche.component.html',
   styleUrls: ['./barre-recherche.component.css'],
-  imports: [FormsModule] 
+  imports: [FormsModule, RouterModule] 
 })
 export class BarreRechercheComponent {
   searchQuery: string = '';

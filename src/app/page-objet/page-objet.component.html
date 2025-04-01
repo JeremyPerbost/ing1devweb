@@ -1,0 +1,13 @@
+
+<div class="objets-container">
+  <h2>Liste des Objets</h2>
+  <div *ngIf="objets$ | async as objets; else loading">
+    <div class="objet-card" *ngFor="let objet of objets">
+      <h3>{{ objet.Nom }}</h3>
+      <p>{{ objet.Informations }}</p>
+      <span class="categorie">{{ objet.categorie }}</span>
+    </div>
+  </div>
+  <ng-template #loading>Chargement...</ng-template>
+</div>
+<app-pied-de-page></app-pied-de-page>
