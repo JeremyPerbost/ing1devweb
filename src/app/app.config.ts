@@ -14,12 +14,11 @@ const firebaseConfig = {
   measurementId: "G-N06L013WLW"
 };
 
-// ✅ Utilisation de `provideFirebaseApp` et `provideFirestore` dans appConfig
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideFirebaseApp(() => initializeApp(firebaseConfig)),  // 🔥 Initialisation Firebase
-    provideFirestore(() => getFirestore())  // 🔥 Initialisation Firestore
+    provideFirebaseApp(() => initializeApp(firebaseConfig)),  
+    provideFirestore(() => getFirestore())  
   ]
 };
