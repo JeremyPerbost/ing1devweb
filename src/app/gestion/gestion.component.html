@@ -1,0 +1,22 @@
+<div *ngIf="issimple || iscomplexe">
+    <h2>Objets appairés à Domovia</h2>
+    <div *ngIf="objets$ | async as objets; else loading" class="objets-grid">
+        <div class="objet-card" *ngFor="let objet of objets">
+            <button *ngIf="iscomplexe" class="delete-button" (click)="supprimer_objet(objet)">Supprimer</button>
+            <button *ngIf="iscomplexe" class="connnexion-button" (click)="connexion(objet)">connecter/deconnecter</button>
+            <h3>{{ objet.Nom }}</h3>
+          <p>type : {{ objet.Type }}</p>
+        <p>
+            <span *ngIf="objet.Connexion === 'connecter'">connecter✅</span>
+            <span *ngIf="objet.Connexion !== 'connecter'">déconnecter❌</span>
+        </p>
+          <span class="categorie">{{ objet.categorie }}</span>
+          
+        </div>
+    </div>
+    <ng-template #loading>Chargement...</ng-template>
+    <app-create-object *ngIf="iscomplexe"></app-create-object>
+</div>
+<div *ngIf="!issimple && !iscomplexe">
+    <p>Connectez vous pour voir les objets connectés de la maison 🏠</p>
+</div>

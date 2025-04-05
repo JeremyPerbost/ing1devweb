@@ -60,7 +60,7 @@
     </form>
     <div class="consult_niveau">
         <div>
-            <p>Level : {{level}}</p>
+            <p [(ngModel)]="level">Level : {{level}}</p>
             <button *ngIf="level > -1 && level < 3" (click)="changer_niveau(usermail, 1)">+</button>
         </div>
         <div>

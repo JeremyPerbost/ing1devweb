@@ -1,0 +1,17 @@
+<div class="objet-card">
+    <h3>Créer un objet</h3>
+    
+    <!-- Lier la valeur du select à la propriété selectedType -->
+    <select (change)="type_objet($event)" [(ngModel)]="type">
+      <option value="lampe">Lampe</option>
+      <option value="assistant">Assistant Domotique</option>
+      <option value="thermostat">Thermostat</option>
+      <option value="camera">Camera</option>
+    </select>
+    
+    <!-- Lier la valeur de l'input à la propriété objectName -->
+    <input type="text" placeholder="Nom de l'objet" [(ngModel)]="nom"/>
+    
+    <button (click)="createObjet()">Créer</button>
+  </div>
+  
