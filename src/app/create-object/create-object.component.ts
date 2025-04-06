@@ -56,7 +56,56 @@ export class CreateObjectComponent {
       this.id = `${this.type}${maxNumber + 1}`;
 
       // Ajouter l'objet à la collection "objet-maison" dans Firestore
-      await addDoc(collectionRef, { Nom: this.nom, Type: this.type, Connexion: "déconnecter",  ID: this.id });
+      //Etat : Allumé ou Eteint
+      //Connexion : connecter ou déconnecter
+      
+      let additionalFields = {};
+      switch (this.type.toLowerCase()) {
+        case 'lampe':
+          additionalFields = { 
+            Luminosite: 100,
+            Connectivite: "Wi-Fi",
+            Couleur: "#FF0000"
+          }; 
+
+          break;
+        case 'thermostat':
+          additionalFields = { 
+            Temperature: 20,
+            Connectivite: "Wi-Fi",
+            Batterie: 100,
+            TemperatureActuelle: 20,
+            TemperatureCible: 20,
+          }; 
+          break;
+        case 'assistant':
+          additionalFields = { 
+            Volume: 50,
+            VolumeCible: 50,
+            Connectivite: "Wi-Fi",
+            Batterie: 100,
+            Microphone: true
+          }; 
+          break;
+        case 'camera':
+          additionalFields = {
+            Resolution: '1080p',
+            Connectivite: "Filaire", 
+            Batterie: 100,  
+          };
+          break;
+        default:
+          console.warn('Type inconnu, aucun champ supplémentaire ajouté.');
+      }
+
+      await addDoc(collectionRef, { 
+        Nom: this.nom, 
+        Type: this.type, 
+        Etat: "Allumé", 
+        Connexion: "déconnecter",  
+        ID: this.id,
+        ...additionalFields // Ajouter les champs spécifiques au type
+      });
       console.log("Objet ajouté avec succès :", this.nom, "de type", this.type, "avec ID", this.id);
 
       // Réinitialiser les champs
