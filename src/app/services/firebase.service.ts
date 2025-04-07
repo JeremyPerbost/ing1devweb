@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { getFirestore, collection, addDoc, query, where, getDocs, doc, updateDoc, deleteDoc, getDoc } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, query, where, getDocs, doc, updateDoc, deleteDoc, getDoc, CollectionReference, DocumentData } from 'firebase/firestore';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import emailjs from 'emailjs-com';
 import { v4 as uuidv4 } from 'uuid';  // Importer uuid pour générer des tokens uniques
@@ -10,6 +10,9 @@ import { userService } from './user.service';
   providedIn: 'root'
 })
 export class FirebaseService {
+  deleteDocument(objetsCollection: CollectionReference<DocumentData, DocumentData>, id: any) {
+    throw new Error('Method not implemented.');
+  }
   private db = getFirestore();  // Initialisation de Firestore
 
   private est_connecter = new BehaviorSubject<boolean>(false); // État de connexion
