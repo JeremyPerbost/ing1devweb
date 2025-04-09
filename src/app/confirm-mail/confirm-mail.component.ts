@@ -4,11 +4,10 @@ import { FirebaseService } from '../services/firebase.service';
 import { FormsModule } from '@angular/forms';
 import { MainBannerComponent } from "../main-banner/main-banner.component";
 import { PiedDePageComponent } from "../pied-de-page/pied-de-page.component";
-import { ConnexionComponent } from "../connexion/connexion.component";  // Ajouter cet import
 import { ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-confirm-mail',
-  imports: [RouterModule, FormsModule, MainBannerComponent, PiedDePageComponent, ConnexionComponent],
+  imports: [RouterModule, FormsModule, MainBannerComponent, PiedDePageComponent],
   templateUrl: './confirm-mail.component.html',
   styleUrls: ['../../assets/styles.css', 'confirm-mail.component.css']
 })
