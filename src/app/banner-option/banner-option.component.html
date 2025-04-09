@@ -1,0 +1,30 @@
+<ul class="navbar">
+  <li class="mobil">
+    <a routerLink="/home">
+      <img class="logo-mobil" src="/assets/img/logo_name.png" />
+    </a>
+  </li>
+  <li class="mobil" *ngIf="est_connecter">
+    <a>
+      <img [src]="photoURL" class="profile-photo" alt="Photo de profil" (click)="showModifPhoto = !showModifPhoto" />
+    </a>
+  </li>
+  <li>
+      <a routerLink="/home" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="link-nav">Accueil</a>
+  </li>
+  <li>
+      <a routerLink="/information" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="link-nav">Informations</a>
+  </li>
+  <li *ngIf="!est_connecter" class="se-connecter">
+    <a routerLink="/inscription" class="right">Se connecter</a>
+  </li>
+  <li *ngIf="est_connecter">
+    <a routerLink="/home" class="right" (click)="deconnexion()">Se déconnecter</a>
+  </li>
+  <li class="pc" *ngIf="est_connecter">
+    <a>
+      <img [src]="photoURL" class="profile-photo" alt="Photo de profil" (click)="showModifPhoto = !showModifPhoto" />
+    </a>
+  </li>
+</ul>
+  
