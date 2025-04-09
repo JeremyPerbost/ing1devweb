@@ -3,7 +3,6 @@ import { InformationComponent } from './information/information.component';
 import { AppComponent } from '../app/app.component';
 import {PageInconnueComponent} from './page-inconnue/page-inconnue.component';
 import {HomeComponent} from './home/home.component';
-import {InscriptionComponent} from './inscription/inscription.component'
 import {ConnexionComponent} from './connexion/connexion.component'
 import {ConfirmConnexionComponent} from './confirm-connexion/confirm-connexion.component'
 import {IncorrectConnexionComponent} from './incorrect-connexion/incorrect-connexion.component'
@@ -19,7 +18,6 @@ export const routes: Routes = [
     { path: 'inscription', component: InscriptionComponent},  // Route vers InformationComponent
     { path: 'connexion', component: ConnexionComponent},  // Route vers InformationComponent
     { path: 'confirm-connexion', component: ConfirmConnexionComponent},
-    { path: 'incorrect-connexion', component: IncorrectConnexionComponent},
     { path: 'profil', component: MonProfilComponent},
     { path: 'attente-confirmation-admin', component: AttenteConfirmationAdminComponent},
     { path: 'attente-confirmation-mail', component: AttenteConfirmationMailComponent},
