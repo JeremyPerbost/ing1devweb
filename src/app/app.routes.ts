@@ -10,10 +10,12 @@ import { AttenteConfirmationAdminComponent } from './attente-confirmation-admin/
 import { AttenteConfirmationMailComponent } from './attente-confirmation-mail/attente-confirmation-mail.component';
 import { ConfirmMailComponent } from './confirm-mail/confirm-mail.component';
 import { PageObjetComponent } from './page-objet/page-objet.component';
+import { InscriptionComponent } from './inscription/inscrisption.component';
 export const routes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },  // Redirection vers '/home'
     { path: 'home', component: HomeComponent },  // Assure-toi que HomeComponent existe
     { path: 'information', component: InformationComponent},  // Route vers InformationComponent
+    { path: 'inscription', component: InscriptionComponent},
     { path: 'connexion', component: ConnexionComponent},  // Route vers InformationComponent
     { path: 'confirm-connexion', component: ConfirmConnexionComponent},
     { path: 'profil', component: MonProfilComponent},
