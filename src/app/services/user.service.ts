@@ -95,30 +95,18 @@ export class userService {
   }
 
   // Méthode pour authentifier un utilisateur
-<<<<<<< HEAD
   async authenticateUser(mail: string, password: string): Promise<boolean> {
     try {
       let querySnapshot = await getDocs(query(
         collection(this.db, 'user'),
         where('mail', '==', mail),
-=======
-  async authenticateUser(mailOrPseudo: string, password: string): Promise<boolean> {
-    try {
-      let querySnapshot = await getDocs(query(
-        collection(this.db, 'user'),
-        where('mail', '==', mailOrPseudo),
->>>>>>> 079912d5ed14bf2ef402813945e6df7ea325aac7
         where('password', '==', password)
       ));
 
       if (querySnapshot.empty) {
         const qPseudo = query(
           collection(this.db, 'user'),
-<<<<<<< HEAD
           where('name', '==', mail),
-=======
-          where('name', '==', mailOrPseudo),
->>>>>>> 079912d5ed14bf2ef402813945e6df7ea325aac7
           where('password', '==', password)
         );
         querySnapshot = await getDocs(qPseudo);
