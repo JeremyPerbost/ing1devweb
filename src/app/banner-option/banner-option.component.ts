@@ -25,6 +25,14 @@ export class OptionBannerComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     // S'abonner à l'état de connexion
+<<<<<<< HEAD
+    this.firebaseservice.est_connecter$.subscribe((isConnected) => {
+      this.est_connecter = isConnected;
+      if (isConnected) {
+        this.loadUserInfo();
+      }
+    })
+=======
     this.subscriptions.add(
       this.firebaseservice.est_connecter$.subscribe((isConnected) => {
         this.est_connecter = isConnected;
@@ -33,6 +41,7 @@ export class OptionBannerComponent implements OnInit, OnDestroy {
         }
       })
     );
+>>>>>>> 079912d5ed14bf2ef402813945e6df7ea325aac7
   }
 
   loadUserInfo() {

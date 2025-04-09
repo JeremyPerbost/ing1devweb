@@ -1,21 +1,61 @@
-import { Component,OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FirebaseService } from '../services/firebase.service';
 import { Firestore, collection, collectionData, deleteDoc, doc, query, where, getDocs, updateDoc } from '@angular/fire/firestore';
 import { Router, RouterModule } from '@angular/router';
 import { Observable } from 'rxjs';
 import { CreateObjectComponent } from "../create-object/create-object.component";
+import { CreatePieceComponent } from "../create-piece/create-piece.component";
+import { FormsModule } from '@angular/forms';
+
 @Component({
   selector: 'app-gestion',
   standalone: true,
-  imports: [CommonModule, RouterModule, CreateObjectComponent],
+  imports: [CommonModule, RouterModule, CreateObjectComponent, CreatePieceComponent, FormsModule],
   templateUrl: './gestion.component.html',
   styleUrls: ['./gestion.component.css', '../../assets/styles.css']
 })
-export class GestionComponent {
+export class GestionComponent implements OnInit {
+  objets$: Observable<any[]> = new Observable();
+  pieces$: Observable<any[]> = new Observable(); // Observable pour les pièces
+  iscomplexe: boolean = false;
+  issimple: boolean = false;
+  users: any[] = [];
+  private piecesMap: { [key: string]: string } = {}; // Cache local pour les pièces
+
+  constructor(private firestore: Firestore, private firebaseservice: FirebaseService, private router: Router) {}
+
+  ngOnInit(): void {
+    const objetsCollection = collection(this.firestore, 'objet-maison');
+    this.objets$ = collectionData(objetsCollection) as Observable<any[]>;
+
+    const piecesCollection = collection(this.firestore, 'pieces');
+    this.pieces$ = collectionData(piecesCollection) as Observable<any[]>;
+
+    // Construire un cache local des pièces
+    this.pieces$.subscribe((pieces) => {
+      this.piecesMap = pieces.reduce((acc, piece) => {
+        acc[piece.nom] = piece.couleur; // Associer le nom de la pièce à sa couleur
+        return acc;
+      }, {});
+    });
+
+    // Vérifier si l'utilisateur est un utilisateur complexe ou simple
+    this.firebaseservice.getCurrentUser().subscribe((user: any) => {
+      if (user.level > 1) {
+        this.iscomplexe = true;
+        this.issimple = false;
+      } else if (user.level == 1 || user.level == 0) {
+        this.iscomplexe = false;
+        this.issimple = true;
+      } else {
+        this.iscomplexe = false;
+        this.issimple = false;
+      }
+    });
+  }
+
   onConnectiviteChange(event: Event, objet: any): void {
-
-
     const target = event.target as HTMLSelectElement;
     const nouvelleConnectivite = target.value; // Récupérer la nouvelle connectivité sélectionnée
     const collectionRef = collection(this.firestore, 'objet-maison');
@@ -23,7 +63,6 @@ export class GestionComponent {
 
     getDocs(q).then((querySnapshot) => {
       if (!querySnapshot.empty) {
-        // Supposons qu'il n'y ait qu'un seul document avec cet ID
         const docRef = querySnapshot.docs[0].ref; // Récupérer la référence du document
         updateDoc(docRef, { Connectivite: nouvelleConnectivite }) // Mettre à jour la connectivité dans Firestore
           .then(() => {
@@ -41,12 +80,6 @@ export class GestionComponent {
     });
   }
 
-  objets$: Observable<any[]> = new Observable(); // Initialisation avec une valeur par défaut
-  constructor(private firestore: Firestore, private firebaseservice: FirebaseService, private router: Router) { }
-  iscomplexe: boolean = false;
-  issimple: boolean = false;
-  users: any[] = [];
-
   onCouleurChange(event: Event, objet: any): void {
     const target = event.target as HTMLInputElement;
     const nouvelleCouleur = target.value; // Récupérer la nouvelle couleur sélectionnée
@@ -55,7 +88,6 @@ export class GestionComponent {
 
     getDocs(q).then((querySnapshot) => {
       if (!querySnapshot.empty) {
-        // Supposons qu'il n'y ait qu'un seul document avec cet ID
         const docRef = querySnapshot.docs[0].ref; // Récupérer la référence du document
         updateDoc(docRef, { Couleur: nouvelleCouleur }) // Mettre à jour la couleur dans Firestore
           .then(() => {
@@ -79,7 +111,6 @@ export class GestionComponent {
 
     getDocs(q).then((querySnapshot) => {
       if (!querySnapshot.empty) {
-        // Supposons qu'il n'y ait qu'un seul document avec cet ID
         const docRef = querySnapshot.docs[0].ref; // Récupérer la référence du document
         updateDoc(docRef, { Luminosite: nouvelleLuminosite }) // Mettre à jour la luminosité dans Firestore
           .then(() => {
@@ -109,7 +140,6 @@ export class GestionComponent {
     try {
       const querySnapshot = await getDocs(q);
       if (!querySnapshot.empty) {
-        // Supposons qu'il n'y ait qu'un seul document avec cet ID
         const docRef = querySnapshot.docs[0].ref; // Récupérer la référence du document
         const newConnexionStatus = objet.Connexion === "déconnecter" ? "connecter" : "déconnecter";
         await updateDoc(docRef, { Connexion: newConnexionStatus }); // Mettre à jour le champ Connexion
@@ -122,14 +152,13 @@ export class GestionComponent {
       console.error("Erreur lors de la mise à jour de la connexion :", error);
     }
   }
-    
+
   async supprimer_objet(objet: any) {
     const collectionRef = collection(this.firestore, 'objet-maison');
     const q = query(collectionRef, where('ID', '==', objet.ID)); // Rechercher par champ personnalisé 'ID'
     try {
       const querySnapshot = await getDocs(q);
       if (!querySnapshot.empty) {
-        // Supposons qu'il n'y ait qu'un seul document avec cet ID
         const docRef = querySnapshot.docs[0].ref; // Récupérer la référence du document
         await deleteDoc(docRef); // Supprimer le document
         console.log("Objet supprimé avec succès :", objet.Nom, "de type", objet.Type, "avec ID", objet.ID);
@@ -149,7 +178,6 @@ export class GestionComponent {
 
     getDocs(q).then((querySnapshot) => {
       if (!querySnapshot.empty) {
-        // Supposons qu'il n'y ait qu'un seul document avec cet ID
         const docRef = querySnapshot.docs[0].ref; // Récupérer la référence du document
         updateDoc(docRef, { Resolution: nouvelleResolution }) // Mettre à jour la résolution dans Firestore
           .then(() => {
@@ -166,6 +194,7 @@ export class GestionComponent {
       console.error("Erreur lors de la récupération du document :", error);
     });
   }
+
   onMicrophoneChange(event: Event, objet: any): void {
     const target = event.target as HTMLSelectElement;
     const nouvelEtatMicrophone = target.value === 'true'; // Convertir la valeur en booléen
@@ -174,7 +203,6 @@ export class GestionComponent {
 
     getDocs(q).then((querySnapshot) => {
       if (!querySnapshot.empty) {
-        // Supposons qu'il n'y ait qu'un seul document avec cet ID
         const docRef = querySnapshot.docs[0].ref; // Récupérer la référence du document
         updateDoc(docRef, { Microphone: nouvelEtatMicrophone }) // Mettre à jour l'état du microphone dans Firestore
           .then(() => {
@@ -191,6 +219,7 @@ export class GestionComponent {
       console.error("Erreur lors de la récupération du document :", error);
     });
   }
+
   onVolumeCibleChange(event: Event, objet: any): void {
     const target = event.target as HTMLInputElement;
     const nouveauVolumeCible = Number(target.value); // Convertir en nombre
@@ -265,22 +294,51 @@ export class GestionComponent {
     });
   }
 
-  ngOnInit(): void {
-    const objetsCollection = collection(this.firestore, 'objet-maison');
-    this.objets$ = collectionData(objetsCollection) as Observable<any[]>;
-    // Vérifier si l'utilisateur est un utilisateur complexe ou simple
-    this.firebaseservice.getCurrentUser().subscribe((user: any) => {
-      if (user.level > 1) {
-        this.iscomplexe = true;
-        this.issimple = false;
-      } else if (user.level ==1 || user.level == 0) {
-        this.iscomplexe = false;
-        this.issimple = true;
+  // Méthode pour gérer le changement de pièce
+  onPieceChange(event: Event, objet: any): void {
+    const target = event.target as HTMLSelectElement;
+    const nouvellePieceNom = target.value; // Récupérer le nom de la pièce sélectionnée
+
+    if (!nouvellePieceNom) {
+      console.error('Aucune pièce sélectionnée.');
+      return;
+    }
+
+    const collectionRef = collection(this.firestore, 'objet-maison');
+    const q = query(collectionRef, where('ID', '==', objet.ID)); // Rechercher l'objet par son ID
+
+    getDocs(q).then((querySnapshot) => {
+      if (!querySnapshot.empty) {
+        const docRef = querySnapshot.docs[0].ref;
+
+        // Mettre à jour l'objet avec le nom de la pièce (PieceID)
+        updateDoc(docRef, { PieceID: nouvellePieceNom })
+          .then(() => {
+            objet.PieceID = nouvellePieceNom; // Mettre à jour localement
+            console.log(`Pièce attribuée avec succès pour ${objet.Nom} : ${nouvellePieceNom}`);
+          })
+          .catch((error) => {
+            console.error('Erreur lors de la mise à jour de la pièce dans Firestore :', error);
+          });
+      } else {
+        console.error('Aucun document trouvé avec l\'ID :', objet.ID);
       }
-      else {
-        this.iscomplexe = false;
-        this.issimple = false;
-      }
+    }).catch((error) => {
+      console.error('Erreur lors de la récupération du document :', error);
     });
+  }
+
+  // Méthode pour récupérer la couleur de la pièce attribuée
+  getPieceColor(pieceNom: string): string {
+    const hexColor = this.piecesMap[pieceNom] || '#ffffff'; // Récupérer la couleur ou une couleur par défaut
+    return this.hexToRgba(hexColor, 0.7); // Convertir en rgba avec 70% de transparence
+  }
+  
+  private hexToRgba(hex: string, alpha: number): string {
+    const bigint = parseInt(hex.slice(1), 16);
+    const r = (bigint >> 16) & 255;
+    const g = (bigint >> 8) & 255;
+    const b = bigint & 255;
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
   }
 }

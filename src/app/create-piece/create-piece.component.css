@@ -1,0 +1,55 @@
+/* Conteneur principal pour centrer le contenu */
+.objets-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+  }
+  
+  /* Titre */
+  h2 {
+    margin-bottom: 20px;
+    font-size: 2em;
+    color: white;
+  }
+  
+  /* Conteneur des cartes */
+  .objets-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    max-width: 800px;
+  }
+  /* Carte */
+  .objet-card {
+    background: grey;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 250px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .objet-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Catégorie */
+  .categorie {
+    display: inline-block;
+    background: #007bc2;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.9em;
+  }
+
+  .error-message {
+    color: red;
+    margin-top: 10px;
+    font-size: 14px;
+  }

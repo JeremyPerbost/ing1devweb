@@ -1,6 +1,10 @@
 import { Component} from '@angular/core';
 import {Router, RouterModule } from '@angular/router';
+<<<<<<< HEAD
+import { FirebaseService } from '../services/firebase.service';
+=======
 import { FirebaseService } from '../firebase.service';
+>>>>>>> 079912d5ed14bf2ef402813945e6df7ea325aac7
 import { FormsModule } from '@angular/forms';
 import { CommonModule} from '@angular/common';
 
