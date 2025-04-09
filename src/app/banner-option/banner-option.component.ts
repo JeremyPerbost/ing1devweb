@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { RouterModule } from '@angular/router'; // Importer RouterModule
-import { FirebaseService } from '../firebase.service';
+import { FirebaseService } from '../services/firebase.service';
 import { CommonModule } from '@angular/common'; // Importer CommonModule
 import { Subscription } from 'rxjs';
 import { ModifPhotoComponent } from "../modif-photo/modif-photo.component"; // Importer Subscription pour gérer les abonnements
