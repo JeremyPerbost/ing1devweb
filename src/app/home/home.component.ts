@@ -1,31 +1,43 @@
-import { Component } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
-import { MainBannerComponent } from "../main-banner/main-banner.component";
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { PiedDePageComponent } from "../pied-de-page/pied-de-page.component";
-import { AdminComponent } from "../admin/admin.component"; // Importer RouterModule
-import { BarreRechercheComponent } from "../barre-recherche/barre-recherche.component";
-import { GestionComponent } from "../gestion/gestion.component";
-import { CommonModule } from '@angular/common';
-import { FirebaseService } from '../services/firebase.service';
+import { MainBannerComponent } from "../main-banner/main-banner.component";
+
 @Component({
   selector: 'app-home',
-  imports: [RouterModule, MainBannerComponent, PiedDePageComponent, AdminComponent, AdminComponent, BarreRechercheComponent, GestionComponent, CommonModule],
+  standalone: true,
+  imports: [RouterModule, PiedDePageComponent, MainBannerComponent],
   templateUrl: './home.component.html',
-  styleUrl: '../../assets/styles.css'
+  styleUrls: ['./home.component.css', '../../assets/styles.css']
 })
-export class HomeComponent {
-  constructor(private firebaseservice: FirebaseService, private router: Router) {}
-  isvisiteur: boolean = false;
-  users: any[] = [];
+export class HomeComponent implements AfterViewInit {
 
-  ngOnInit() {
-    // Vérifier si l'utilisateur est un visiteur sans prendre en compte la connexion
-    this.firebaseservice.getCurrentUser().subscribe((user: any) => {
-      if (user?.level > -1) {
-      this.isvisiteur = false;
-      } else {
-      this.isvisiteur = true;
-      }
-    });
+  @ViewChild('loaderWrapper', { static: false }) loaderWrapper!: ElementRef;
+
+  ngAfterViewInit(): void {
+    // Gestion du loader
+    const loader = this.loaderWrapper?.nativeElement;
+    if (loader) {
+      loader.style.opacity = '0';
+      setTimeout(() => {
+        loader.style.display = 'none';
+      }, 500);
+    }
+
+    // Animation fade-in
+    const faders = document.querySelectorAll('.fade-in');
+    const options = { threshold: 0.2 };
+
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('appear');
+          obs.unobserve(entry.target);
+        }
+      });
+    }, options);
+
+    faders.forEach(fader => observer.observe(fader));
   }
 }
+

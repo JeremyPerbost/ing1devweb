@@ -1,18 +1,17 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router'; // Importer RouterModule
-import { FirebaseService } from '../services/firebase.service';
+import { FirebaseService } from '../firebase.service';
 import { FormsModule } from '@angular/forms';
-import { MainBannerComponent } from "../main-banner/main-banner.component";
-import { PiedDePageComponent } from "../pied-de-page/pied-de-page.component";
-import { ConnexionComponent } from "../connexion/connexion.component";  // Ajouter cet import
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-inscription',
-  imports: [RouterModule, FormsModule, MainBannerComponent, PiedDePageComponent, ConnexionComponent],
+  imports: [RouterModule, FormsModule],
   templateUrl: './inscription.component.html',
   styleUrls: ['../../assets/styles.css', 'inscription.component.css']
 })
 export class InscriptionComponent {
-  user= {
+  user = {
     name: '',
     mail: '',
     password: '',
@@ -23,20 +22,35 @@ export class InscriptionComponent {
     level: -2,
     points: 0
   };
-  erreur: String='';
-  constructor(private firebaseService: FirebaseService){}
-  onSubmit_inscription(): void{
+  erreur: String = '';
+  
+  constructor(private firebaseService: FirebaseService, private router: Router) {}
+
+  onSubmit_inscription(): void {
     this.firebaseService.addUser(this.user).then((result: String) => {
-      this.erreur = result;
-      this.user = { name: '', mail: '', password: '', photoURL: '', categorie: '', date_de_naissance: '', sexe: '', level: -2, points: 0 };
-      //level -2 = utilisateur pas encore vérifié par l'admin
-      //level -1 = utilisateur en attente de validation du mail
-      //level 0 = utilisateur débutant
-      //level 1 = utilisateur intermédiaire
-      //level 2 = utilisateur avancé
-      //level 3 = utilisateur expert
-      //Voici les niveaux : débutant, intermédiaire, avancé et
-      //expert. Un utilisateur simple
+      this.erreur = '';  // Réinitialise l'erreur
+      console.log(result);
+      
+      // Si l'inscription est réussie, redirige l'utilisateur vers la page de connexion
+      this.router.navigate(['/identifier/connexion']);  // Redirection vers la page de connexion (tu peux changer selon ta route)
+      
+      // Réinitialise le formulaire
+      this.user = { 
+        name: '', 
+        mail: '', 
+        password: '', 
+        photoURL: '', 
+        categorie: '', 
+        date_de_naissance: '', 
+        sexe: '', 
+        level: -2, 
+        points: 0 
+      };
+    }).catch((error) => {
+      // Gère les erreurs d'inscription
+      this.erreur = `Erreur lors de l'inscription : ${error.message}`;
+      console.error(error);
     });
   }
 }
+

@@ -1,31 +1,24 @@
-<button class="menu-button" (click)="toggleBanner()">☰</button>
-<div class="banner" [ngClass]="{'show': isBannerVisible}">
-    <span class="status-icon">{{statut}}</span>
-    <span class="nom">{{nom_utilisateur}}</span>
-    <div class="container" *ngIf="est_connecter">
-        <img [src]="photoURL" alt="Photo de profil" class="profile-photo" (click)="showModifPhoto = !showModifPhoto">
-        <app-modif-photo *ngIf="showModifPhoto"></app-modif-photo>
-        <button (click)="deconnexion()">Se déconnecter</button>
-        <button routerLink="/profil">Profil</button>
+<header>
+  <div class="banner">
+    <div id="button">
+      <app-icon-button icon="menu" (click)="toggleSidebar()"></app-icon-button>
     </div>
-    <div class="container">    
-        <button routerLink="/information">Informations</button>
-        <button routerLink="/home">Accueil</button>
+    <div id="logo">
+      <a routerLink="/home">
+        <img src="/assets/img/logo_name.png" />
+      </a>
     </div>
-    <div class="container" *ngIf="!est_connecter">
-        <button routerLink="/inscription">Se connecter</button>
+    <div class="sidebar" [ngClass]="{'sidebar-open': isSidebarVisible}">
+      <div class="sidebar-content">
+        <app-banner-option></app-banner-option>
+      </div>
     </div>
+    <div *ngIf="isSidebarVisible" class="overlay"></div>
+  </div>
+</header>
 
-</div>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-      let menuButton = document.querySelector(".menu-button");
-      let banner = document.querySelector(".banner");
-  
-      // Clic sur le bouton menu pour afficher/masquer la bannière
-      menuButton.addEventListener("click", function () {
-          banner.classList.toggle("show");
-      });
-    });
-</script>
+
+
+
+

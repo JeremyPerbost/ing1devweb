@@ -1,52 +1,25 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: Arial, sans-serif; /* Définir une police de base */
+}
+
 body {
-    background-color: rgb(48, 48, 48);
-    color: white;
-    font-family: 'Montserrat_regular';
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Pour forcer le pied de page à aller en bas si nécessaire */
 }
 
-h1 {
-    text-align: center;
-}
-h2 {
-    text-align: center;
-}
-
-.banner button :hover{
-    background-color: rgb(0, 0, 0);
-}
-
-form{
-    background-color: rgb(97, 97, 97);
-    text-align: center;
-    border-radius: 13px;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.6);
-    padding: 2%;
-    max-width: 70%; 
-    margin: 20px auto; /* Centre le formulaire horizontalement */
-}
-input{
-    background-color: rgb(161, 161, 161);
-    font-size: 150%;
-    width: 36%;
-    border-radius: 5px;
-    color: white;
-}
-label{
-    font-size: 150%;
+.main {
+  flex-grow: 1; /* Permet au contenu de prendre toute la hauteur restante */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  min-height: 80vh; /* Assure que le conteneur principal prend toujours au moins 100% de la hauteur de la page */
 }
 
-#submit-btn{
-    font-size: 150%;
-    border-radius: 5px;
-    padding: 12px;
-    background-color: rgb(161, 161, 161);
-    color: white;
-    cursor: pointer;
-    margin-top: 50px;
-
-}
 @font-face {
     font-family: 'Montserrat_regular';
     src: url('font/Montserrat/static/Montserrat-Regular.ttf') format('truetype');
