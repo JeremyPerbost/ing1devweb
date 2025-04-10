@@ -5,12 +5,12 @@
         *ngFor="let objet of objets" 
         [style.backgroundColor]="getPieceColor(objet.PieceID)">
             <button *ngIf="iscomplexe" class="delete-button" (click)="supprimer_objet(objet)">Supprimer</button>
-            <button *ngIf="iscomplexe" class="connnexion-button" (click)="connexion(objet)">
+            <button *ngIf="iscomplexe" class="connnexion-button" (click)="connexion(objet); modifierDate($event, objet)">
               {{ objet.Connexion === 'connecter' ? 'Déconnecter' : 'Connecter' }}
             </button>
             <button 
             *ngIf="iscomplexe && objet.Connexion === 'connecter'" 
-            (click)="toggleOnOff(objet)">
+            (click)="toggleOnOff(objet); modifierDate($event, objet)">
             ON/OFF
         </button>            <h3>{{ objet.Nom }}</h3>
             <p>type : {{ objet.Type }}</p>
@@ -24,7 +24,7 @@
                     min="0" 
                     max="100" 
                     [value]="objet.Luminosite" 
-                    (input)="onLuminositeChange($event, objet)" />
+                    (input)="onLuminositeChange($event, objet); modifierDate($event, objet)" />
             </div>
 
             <div *ngIf="iscomplexe && objet.Couleur !== undefined">
@@ -33,7 +33,7 @@
                     id="color-picker-{{objet.id}}" 
                     type="color" 
                     [value]="objet.Couleur" 
-                    (input)="onCouleurChange($event, objet)" />
+                    (input)="onCouleurChange($event, objet); modifierDate($event, objet)" />
             </div>
             
             <div *ngIf="iscomplexe && (objet.Type === 'camera' || objet.Type === 'assistant')">
@@ -41,7 +41,7 @@
                 <select 
                     id="connectivite-select-{{objet.id}}" 
                     [value]="objet.Connectivite" 
-                    (change)="onConnectiviteChange($event, objet)">
+                    (change)="onConnectiviteChange($event, objet); modifierDate($event, objet)">
                     <option value="Wi-Fi">Wi-Fi</option>
                     <option value="Filaire">Filaire</option>
                 </select>
@@ -51,7 +51,7 @@
                 <select 
                     id="resolution-select-{{objet.id}}" 
                     [value]="objet.Resolution" 
-                    (change)="onResolutionChange($event, objet)">
+                    (change)="onResolutionChange($event, objet); modifierDate($event, objet)">
                     <option value="1080p">1080p</option>
                     <option value="1440p">1440p</option>
                     <option value="720p">720p</option>
@@ -65,7 +65,7 @@
                     <select 
                         id="microphone-select-{{objet.id}}" 
                         [value]="objet.Microphone ? 'true' : 'false'" 
-                        (change)="onMicrophoneChange($event, objet)">
+                        (change)="onMicrophoneChange($event, objet); modifierDate($event, objet)">
                         <option value="true">Ouvert</option>
                         <option value="false">Fermé</option>
                     </select> 
@@ -80,7 +80,7 @@
                 <select 
                   id="piece-select-{{objet.ID}}" 
                   [(ngModel)]="objet.PieceID" 
-                  (change)="onPieceChange($event, objet)">
+                  (change)="onPieceChange($event, objet); modifierDate($event, objet)">
                   <option *ngFor="let piece of pieces$ | async" [value]="piece.nom">
                     {{ piece.nom }}
                   </option>
@@ -100,7 +100,7 @@
                         min="0" 
                         max="100" 
                         [value]="objet.VolumeCible" 
-                        (input)="onVolumeCibleChange($event, objet)" />
+                        (input)="onVolumeCibleChange($event, objet); modifierDate($event, objet)" />
                 </div>
             </div>
             
@@ -118,7 +118,7 @@
                         min="10" 
                         max="30" 
                         [value]="objet.TemperatureCible" 
-                        (input)="onTemperatureCibleChange($event, objet)" />
+                        (input)="onTemperatureCibleChange($event, objet); modifierDate($event, objet)" />
                 </div>
             </div>
             
@@ -126,7 +126,7 @@
             <div *ngIf="objet.Type === 'camera' || objet.Type === 'assistant' && objet.Connectivite === 'Wi-Fi' && objet.Batterie !== undefined">
                 <p>Batterie : {{ objet.Batterie }}%</p>
             </div>
-            <p>Derniere date de modification : {{date}}</p>
+            <p>Derniere date de modification : {{ objet.Date ? (objet.Date.seconds * 1000 | date:'dd/MM/yyyy HH:mm:ss') : 'Non disponible' }}</p>
         <p>
             <span *ngIf="objet.Connexion === 'connecter'">✅</span>
             <span *ngIf="objet.Connexion !== 'connecter'">❌</span>

@@ -61,20 +61,18 @@ export class GestionComponent implements OnInit {
     const nouvelleConnectivite = target.value; // Récupérer la nouvelle connectivité sélectionnée
     const collectionRef = collection(this.firestore, 'objet-maison');
     const q = query(collectionRef, where('ID', '==', objet.ID)); // Rechercher par champ personnalisé 'ID'
-
+    const date = new Date(); // Récupérer la date actuelle
     getDocs(q).then((querySnapshot) => {
       if (!querySnapshot.empty) {
         const docRef = querySnapshot.docs[0].ref; // Récupérer la référence du document
-        const nouvelleDate = new Date(); // Obtenir la date actuelle
-
         // Mettre à jour Firestore
-        updateDoc(docRef, { Connectivite: nouvelleConnectivite, Date: nouvelleDate })
+        updateDoc(docRef, { Connectivite: nouvelleConnectivite, Date: date }) // Mettre à jour la connectivité et la date dans Firestore
           .then(() => {
             // Mettre à jour localement
             objet.Connectivite = nouvelleConnectivite;
-            objet.Date = nouvelleDate;
-
+            objet.Date = date; // Mettre à jour la date locale
             console.log(`Connectivité mise à jour avec succès pour ${objet.Nom} : ${nouvelleConnectivite}`);
+            console.log(`Date mise à jour avec succès pour ${objet.Nom} : ${objet.date}`);
           })
           .catch((error) => {
             console.error("Erreur lors de la mise à jour de la connectivité :", error);
@@ -87,6 +85,31 @@ export class GestionComponent implements OnInit {
     });
   }
 
+  modifierDate(event: Event, objet: any): void {
+    const target = event.target as HTMLSelectElement;
+    const collectionRef = collection(this.firestore, 'objet-maison');
+    const q = query(collectionRef, where('ID', '==', objet.ID)); // Rechercher par champ personnalisé 'ID'
+    const date = new Date(); // Récupérer la date actuelle
+    getDocs(q).then((querySnapshot) => {
+      if (!querySnapshot.empty) {
+        const docRef = querySnapshot.docs[0].ref; // Récupérer la référence du document
+        // Mettre à jour Firestore
+        updateDoc(docRef, {Date: date }) // Mettre à jour la connectivité et la date dans Firestore
+          .then(() => {
+            // Mettre à jour localement
+            objet.Date = date; // Mettre à jour la date locale
+            console.log(`Date mise à jour avec succès pour ${objet.Nom} : ${objet.Date}`);
+          })
+          .catch((error) => {
+            console.error("Erreur de changement de date de modif:", error);
+          });
+      } else {
+        console.error("Aucun document trouvé avec l'ID :", objet.ID);
+      }
+    }).catch((error) => {
+      console.error("Erreur lors de la récupération du document :", error);
+    });
+  }
   onCouleurChange(event: Event, objet: any): void {
     const target = event.target as HTMLInputElement;
     const nouvelleCouleur = target.value; // Récupérer la nouvelle couleur sélectionnée
