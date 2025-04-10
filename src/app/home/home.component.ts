@@ -3,13 +3,12 @@ import { Router, RouterModule } from '@angular/router';
 import { MainBannerComponent } from "../main-banner/main-banner.component";
 import { PiedDePageComponent } from "../pied-de-page/pied-de-page.component";
 import { AdminComponent } from "../admin/admin.component"; // Importer RouterModule
-import { BarreRechercheComponent } from "../barre-recherche/barre-recherche.component";
 import { GestionComponent } from "../gestion/gestion.component";
 import { CommonModule } from '@angular/common';
 import { FirebaseService } from '../services/firebase.service';
 @Component({
   selector: 'app-home',
-  imports: [RouterModule, MainBannerComponent, PiedDePageComponent, AdminComponent, AdminComponent, BarreRechercheComponent, GestionComponent, CommonModule],
+  imports: [RouterModule, MainBannerComponent, PiedDePageComponent, AdminComponent, AdminComponent, GestionComponent, CommonModule],
   templateUrl: './home.component.html',
   styleUrl: '../../assets/styles.css'
 })

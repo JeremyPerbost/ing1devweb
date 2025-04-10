@@ -27,6 +27,7 @@ export class OptionBannerComponent implements OnInit, OnDestroy {
     // S'abonner à l'état de connexion
     this.subscriptions.add(
       this.firebaseservice.est_connecter$.subscribe((isConnected) => {
+        console.log('État de la connexion changé :', isConnected);
         this.est_connecter = isConnected;
         if (isConnected) {
           this.loadUserInfo();

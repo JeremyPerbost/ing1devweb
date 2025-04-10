@@ -21,6 +21,7 @@ export class GestionComponent implements OnInit {
   iscomplexe: boolean = false;
   issimple: boolean = false;
   users: any[] = [];
+  date: Date = new Date();
   private piecesMap: { [key: string]: string } = {}; // Cache local pour les pièces
 
   constructor(private firestore: Firestore, private firebaseservice: FirebaseService, private router: Router) {}
@@ -64,9 +65,15 @@ export class GestionComponent implements OnInit {
     getDocs(q).then((querySnapshot) => {
       if (!querySnapshot.empty) {
         const docRef = querySnapshot.docs[0].ref; // Récupérer la référence du document
-        updateDoc(docRef, { Connectivite: nouvelleConnectivite }) // Mettre à jour la connectivité dans Firestore
+        const nouvelleDate = new Date(); // Obtenir la date actuelle
+
+        // Mettre à jour Firestore
+        updateDoc(docRef, { Connectivite: nouvelleConnectivite, Date: nouvelleDate })
           .then(() => {
-            objet.Connectivite = nouvelleConnectivite; // Mettre à jour localement
+            // Mettre à jour localement
+            objet.Connectivite = nouvelleConnectivite;
+            objet.Date = nouvelleDate;
+
             console.log(`Connectivité mise à jour avec succès pour ${objet.Nom} : ${nouvelleConnectivite}`);
           })
           .catch((error) => {
@@ -127,13 +134,11 @@ export class GestionComponent implements OnInit {
       console.error("Erreur lors de la récupération du document :", error);
     });
   }
-
   onLuminositeChange(event: Event, objet: any): void {
     const target = event.target as HTMLInputElement;
     const nouvelleLuminosite = Number(target.value); // Convertir en nombre si nécessaire
     this.modifierLuminosite(objet, nouvelleLuminosite);
   }
-
   async connexion(objet: any) {
     const collectionRef = collection(this.firestore, 'objet-maison');
     const q = query(collectionRef, where('ID', '==', objet.ID)); // Rechercher par champ personnalisé 'ID'

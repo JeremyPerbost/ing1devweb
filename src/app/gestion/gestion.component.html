@@ -68,14 +68,14 @@
                         (change)="onMicrophoneChange($event, objet)">
                         <option value="true">Ouvert</option>
                         <option value="false">Fermé</option>
-                    </select>
+                    </select> 
                 </div>
             </div>
             <!--Selection de la piece-->
             <div *ngIf="objet.PieceID!== undefined">
                 <p>Pièce actuelle : {{ objet.PieceID }}</p>
             </div>
-            <div>
+            <div *ngIf="iscomplexe">
                 <label for="piece-select-{{objet.ID}}">Attribuer une pièce :</label>
                 <select 
                   id="piece-select-{{objet.ID}}" 
@@ -126,7 +126,7 @@
             <div *ngIf="objet.Type === 'camera' || objet.Type === 'assistant' && objet.Connectivite === 'Wi-Fi' && objet.Batterie !== undefined">
                 <p>Batterie : {{ objet.Batterie }}%</p>
             </div>
-            
+            <p>Derniere date de modification : {{date}}</p>
         <p>
             <span *ngIf="objet.Connexion === 'connecter'">✅</span>
             <span *ngIf="objet.Connexion !== 'connecter'">❌</span>
