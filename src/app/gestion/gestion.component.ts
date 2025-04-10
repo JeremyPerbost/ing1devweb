@@ -7,11 +7,12 @@ import { Observable } from 'rxjs';
 import { CreateObjectComponent } from "../create-object/create-object.component";
 import { CreatePieceComponent } from "../create-piece/create-piece.component";
 import { FormsModule } from '@angular/forms';
+import { GenererPdfComponent } from "../generer-pdf/generer-pdf.component";
 
 @Component({
   selector: 'app-gestion',
   standalone: true,
-  imports: [CommonModule, RouterModule, CreateObjectComponent, CreatePieceComponent, FormsModule],
+  imports: [CommonModule, RouterModule, CreateObjectComponent, CreatePieceComponent, FormsModule, GenererPdfComponent],
   templateUrl: './gestion.component.html',
   styleUrls: ['./gestion.component.css', '../../assets/styles.css']
 })

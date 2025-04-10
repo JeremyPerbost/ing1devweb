@@ -71,6 +71,9 @@
                     </select> 
                 </div>
             </div>
+            <div>
+                Consommation éléctrique mensuelle : {{ objet.Electricite }} kWh
+            </div>
             <!--Selection de la piece-->
             <div *ngIf="objet.PieceID!== undefined">
                 <p>Pièce actuelle : {{ objet.PieceID }}</p>
@@ -126,7 +129,7 @@
             <div *ngIf="objet.Type === 'camera' || objet.Type === 'assistant' && objet.Connectivite === 'Wi-Fi' && objet.Batterie !== undefined">
                 <p>Batterie : {{ objet.Batterie }}%</p>
             </div>
-            <p>Derniere date de modification : {{ objet.Date ? (objet.Date.seconds * 1000 | date:'dd/MM/yyyy HH:mm:ss') : 'Non disponible' }}</p>
+            <p *ngIf="iscomplexe">Derniere date de modification : {{ objet.Date ? (objet.Date.seconds * 1000 | date:'dd/MM/yyyy HH:mm:ss') : 'Non disponible' }}</p>
         <p>
             <span *ngIf="objet.Connexion === 'connecter'">✅</span>
             <span *ngIf="objet.Connexion !== 'connecter'">❌</span>
@@ -137,6 +140,7 @@
     <ng-template #loading>Chargement...</ng-template>
     <app-create-object *ngIf="iscomplexe"></app-create-object>
     <app-create-piece *ngIf="iscomplexe"></app-create-piece>
+    <app-generer-pdf *ngIf="iscomplexe"></app-generer-pdf>
 </div>
 <div *ngIf="!issimple && !iscomplexe">
     <p>Connectez vous pour voir les objets connectés de la maison 🏠</p>

@@ -105,6 +105,7 @@ export class CreateObjectComponent {
         Connexion: "déconnecter",  
         ID: this.id,
         Date: new Date(), // Ajouter la date actuelle
+        Electricite: 11, // electricité en Watts
         ...additionalFields // Ajouter les champs spécifiques au type
       });
       console.log("Objet ajouté avec succès :", this.nom, "de type", this.type, "avec ID", this.id);
