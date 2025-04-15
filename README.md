@@ -6,33 +6,33 @@ Maison intelligente
 
 Pour correctement lancer/tester le projet, vous devez avoir certains prérequis 
 
--Installer Node.JS puis npm: ``npm install -g @angular/cli``
+- Installer Node.JS puis npm: ``npm install -g @angular/cli``
 
--Installer Firebase : ``npm install firebase``
+- Installer Firebase : ``npm install firebase``
 
--Installer les outils Firebase : ``npm install -g firebase-tools``
+- Installer les outils Firebase : ``npm install -g firebase-tools``
 
--D'autres fonctions angular doivent etre installées : faites un coup de ``ng add @Angular/fire`` et activés toutes les options si vous le souhaiter
+- D'autres fonctions angular doivent etre installées : faites un coup de ``ng add @Angular/fire`` et activés toutes les options si vous le souhaiter
 
--Installer e-mailjs pour gérer les mails : ``npm install emailjs-com --save``
+- Installer e-mailjs pour gérer les mails : ``npm install emailjs-com --save``
 
 -Installer le service de token unique pour les mail  :``npm install uuid``
 
--Installer le service pdf : ``npm install jspdf`` et aussi ``npm install chart.js``
+- Installer le service pdf : ``npm install jspdf`` et aussi ``npm install chart.js``
 
--Lancer le serveur : ``ng serve``
+- Lancer le serveur : ``ng serve``
 
 ## 📖 INFORMATIONS 📖
 
--Chaque component est stocké dans ``src/app``
+- Chaque component est stocké dans ``src/app``
 
--``index.html`` contient ``app.component.html`` qui contient tout les components !
+- ``index.html`` contient ``app.component.html`` qui contient tout les components !
 
--le changement de page est gérer avec le fichier ``app.routes.ts``
+- le changement de page est gérer avec le fichier ``app.routes.ts``
 
--Toutes les requetes liés avec la base de données sont dans le service firebase (fichier ``firebase.service.ts``)
+- Toutes les requetes liés avec la base de données sont dans le service firebase (fichier ``firebase.service.ts``)
 
--La base de donnée est gérée avec firebase. Assurez vous d'y avoir acces
+- La base de donnée est gérée avec firebase. Assurez vous d'y avoir acces
 
 ## Participants :
 Jérémy
