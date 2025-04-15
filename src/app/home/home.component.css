@@ -168,6 +168,13 @@
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
+
+  .admin-container {
+    margin-top: 4rem;
+    padding: 2rem;
+    background-color: #fff;
+    border-top: 2px solid #3f51b5;
+  }
   
   /* Animations */
   @keyframes spin {

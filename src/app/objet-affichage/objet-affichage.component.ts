@@ -72,4 +72,14 @@ export class ObjetAffichageComponent implements OnInit {
       this.objet.connexion = 'Déconnecté';
     }
   }
+
+  supprimer(): void {
+    if (confirm("Êtes-vous sûr de vouloir supprimer cet objet ?")) {
+      this.firebaseService.deleteObjet(this.objet.id).then(() => {
+        console.log(`Objet avec l'ID ${this.objet.id} supprimé avec succès.`);
+      }).catch(error => {
+        console.error(`Erreur lors de la suppression de l'objet avec l'ID ${this.objet.id} :`, error);
+      });
+    }
+  }
 }

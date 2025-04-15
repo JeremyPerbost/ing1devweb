@@ -137,6 +137,7 @@
   <div *ngIf="canEdit">
     <button (click)="toggleEdit()">{{ editMode ? 'Annuler' : 'Modifier' }}</button>
     <button *ngIf="editMode" (click)="saveChanges()">Enregistrer</button>
+    <button *ngIf="editMode" (click)="supprimer()">Supprimer Objet</button>
   </div>
 </div>
 

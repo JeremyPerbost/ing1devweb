@@ -20,7 +20,7 @@
       <!-- Features -->
       <section class="features fade-in">
         <div class="feature-card">
-          <img src="../../assets/img/ChatGPT_Image_Apr_8_2025_11_33_09_PM.png" alt="Maison connectée" />
+          <img src="../../assets/img/secu.png" alt="Maison connectée" />
           <div class="feature-text">
             <h3>Confort & Domotique</h3>
             <p>Contrôlez l’éclairage, le chauffage et plus encore depuis votre téléphone.</p>
@@ -29,7 +29,7 @@
         </div>
     
         <div class="feature-card">
-          <img src="../../assets/img/ChatGPT Image Apr 8, 2025, 11_23_56 PM.png" alt="Sécurité connectée" />
+          <img src="../../assets/img/secu2.png" alt="Sécurité connectée" />
           <div class="feature-text">
             <h3>Sécurité intelligente</h3>
             <p>Surveillez votre maison en temps réel avec nos capteurs connectés.</p>
@@ -41,13 +41,12 @@
     <div *ngIf="!isvisiteur">
       <app-objet-utilisateur></app-objet-utilisateur>
     </div> 
-    <div *ngIf="!isSimple">
-      <div class="user-apps-container">
-        <app-create-object></app-create-object>
-        <app-create-piece></app-create-piece>
-        <app-generer-pdf></app-generer-pdf>
-        <app-admin></app-admin>
-      </div>
+    <div *ngIf="!isSimple" class="user-apps-container">
+      <app-create-object></app-create-object>
+      <app-create-piece></app-create-piece>
+      <app-generer-pdf></app-generer-pdf>
+    </div> 
+    <div *ngIf="!isSimple" class="admin-container">
+      <app-admin></app-admin>
     </div>
-</div>
 <app-pied-de-page></app-pied-de-page>

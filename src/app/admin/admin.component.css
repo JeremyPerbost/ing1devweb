@@ -1,47 +1,104 @@
-/* Style de base pour le tableau */
-table {
-  width: 100%;
-  border-radius: 7px;
-  background-color: white;
-  border-collapse: collapse;
-  margin: 20px 0;
+div[ngIf="isadmin"] {
+  max-width: 95%;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #f9f9f9;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', sans-serif;
 }
 
-/* Adaptation pour les petits écrans (moins de 600px de largeur) */
-@media screen and (max-width: 600px) {
-  table {
-    width: 100%; /* Le tableau prend toute la largeur */
-    font-size: 12px; /* Réduit la taille de la police pour les petits écrans */
-  }
+h2, h3 {
+  color: #3f51b5;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
 
-  /* Ajout d'une bordure fine autour des cellules pour une meilleure lisibilité */
-  th, td {
-    padding: 8px; /* Espacement entre le texte et les bordures */
-    border: 1px solid #ddd;
-    text-align: left;
-    display: block; /* Transforme les cellules en blocs pour éviter qu'elles ne débordent */
-    width: 100%; /* Chaque cellule prend toute la largeur */
-  }
-  /* Empêche les bordures de se chevaucher */
-  th {
-    background-color: #f2f2f2;
-    font-weight: bold;
-    text-transform: uppercase; /* Optionnel, pour plus de lisibilité */
-  }
+h2 {
+  font-size: 2rem;
+}
 
-  /* Optionnel : Ajouter un défilement horizontal si nécessaire */
-  .table-wrapper {
-    overflow-x: auto; /* Permet de défiler horizontalement */
-    -webkit-overflow-scrolling: touch; /* Meilleure expérience sur iOS */
-  }
+h3 {
+  font-size: 1.5rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 2rem;
+  font-size: 0.95rem;
+}
+
+thead {
+  background-color: #3f51b5;
+  color: white;
 }
 
 th, td {
-  border: 1px solid #b3b3b3;
-  padding: 8px;
+  padding: 0.8rem;
+  text-align: center;
+  border: 1px solid #ddd;
 }
 
-th {
-  background-color: #b3b3b3;
-  text-align: left;
+tbody tr:nth-child(even) {
+  background-color: #f1f1f1;
+}
+
+button {
+  background-color: #3f51b5;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin: 0 0.2rem;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+  background-color: #303f9f;
+  transform: translateY(-2px);
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+td[ngStyle] {
+  font-weight: bold;
+}
+
+
+@media (max-width: 768px) {
+  table, thead, tbody, th, td, tr {
+    display: block;
+  }
+
+  thead {
+    display: none;
+  }
+
+  tr {
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    background-color: #fff;
+    padding: 1rem;
+  }
+
+  td {
+    text-align: left;
+    padding: 0.5rem 0;
+    position: relative;
+  }
+
+  td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    color: #3f51b5;
+    display: block;
+    margin-bottom: 0.3rem;
+  }
 }

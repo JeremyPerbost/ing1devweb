@@ -32,9 +32,7 @@ export class ProfilComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    // Vérifie les paramètres de l'URL pour déterminer le mode d'affichage
     this.route.url.subscribe(urlSegments => {
-      // Si l'URL contient 'social', on est en mode "social"
       this.isSocialMode = urlSegments.some(segment => segment.path === 'social');
     });
 
@@ -42,8 +40,9 @@ export class ProfilComponent implements OnInit, OnDestroy {
       // Mode "social": afficher l'utilisateur par ID
       this.firebaseService.getUserById(this.UserId).then(user => {
         this.userData = user;
+        console.log('Utilisateur chargé par ID :', this.userData);
       }).catch((error) => {
-        console.error('Erreur lors de la récupération de l\'utilisateur:', error);
+        console.error('Erreur lors de la récupération de l\'utilisateur par ID :', error);
       });
     } else if (this.userEmail) {
       // Charger les informations de l'utilisateur spécifié par email
@@ -56,14 +55,12 @@ export class ProfilComponent implements OnInit, OnDestroy {
           console.error('Erreur lors du chargement de l\'utilisateur par email :', error);
         }
       });
-    } else if (this.userData) {
-      // Les données de l'utilisateur connecté sont déjà disponibles
-      console.log('Utilisateur connecté chargé :', this.userData);
     } else {
       // Mode "profil": afficher l'utilisateur connecté
       this.firebaseService.user$.pipe(takeUntil(this.unsubscribe$)).subscribe(user => {
         if (user) {
           this.userData = user;
+          console.log('Utilisateur connecté chargé :', this.userData);
         }
       });
     }
@@ -81,9 +78,9 @@ export class ProfilComponent implements OnInit, OnDestroy {
 
   updatePhoto(newPhoto: string) {
     if (this.userData && newPhoto) {
-      this.userData.Image = newPhoto;
+      this.userData.photoURL = newPhoto;
       this.isEditingPhoto = false;
-      this.firebaseService.updateProfilePhoto(this.userData.id, newPhoto).then(() => {
+      this.firebaseService.updateProfilePhoto(this.userData.mail, newPhoto).then(() => {
         console.log('Photo de profil mise à jour sur le serveur');
       }).catch((error) => {
         console.error('Erreur lors de la mise à jour de la photo de profil :', error);
@@ -102,27 +99,59 @@ export class ProfilComponent implements OnInit, OnDestroy {
   }
 
   saveProfil(): void {
-    this.firebaseService.updateUser(this.editableUser).then((message: string) => {
-      if (message === "Utilisateur mis à jour avec succès") {
-        this.firebaseService.loadUser(); // recharge les données utilisateur
-        this.isEditingProfil = false;
-      }
+    console.log('Données utilisateur avant mise à jour :', this.editableUser); // Débogage
+
+    if (!this.editableUser.mail) {
+      console.error('Email utilisateur manquant pour la mise à jour.');
+      return;
+    }
+
+    this.firebaseService.updateUser(this.editableUser).then((message) => {
+      console.log(message); // Affiche le message de succès ou d'erreur retourné par `updateUser`
+      this.isEditingProfil = false;
+      this.userData = { ...this.editableUser }; // Mettre à jour les données locales
+    }).catch(error => {
+      console.error('Erreur lors de la mise à jour du profil :', error);
     });
   }
 
   deleteUser() {
     if (confirm("Êtes-vous sûr de vouloir supprimer votre profil ?")) {
       this.firebaseService.deleteUser().then(() => {
+        console.log('Utilisateur supprimé avec succès.');
         this.router.navigate(['/home']);
+      }).catch(error => {
+        console.error('Erreur lors de la suppression de l\'utilisateur :', error);
       });
     }
   }
 
   increaseLevel() {
-    if (this.userData && this.userData.level >0) {
-      this.firebaseService.addLevel(this.userData.mail).then(() => {
-        this.userData.level -= 1;
-      }).catch((error) => console.error('Erreur lors de l\'augmentation du niveau', error));
+    if (this.userData) {
+      const currentPoints = this.userData.points || 0; // Points actuels de l'utilisateur
+      const currentLevel = this.userData.level || 0; // Niveau actuel de l'utilisateur
+
+      // Vérifier les conditions pour augmenter le niveau
+      if (currentLevel === 0 && currentPoints >= 3) {
+        this.firebaseService.addLevel(this.userData.mail).then(() => {
+          this.userData.level = 1; // Passer au niveau 1
+          console.log('Niveau augmenté à 1.');
+        }).catch((error) => console.error('Erreur lors de l\'augmentation au niveau 1 :', error));
+      } else if (currentLevel === 1 && currentPoints >= 7) {
+        this.firebaseService.addLevel(this.userData.mail).then(() => {
+          this.userData.level = 2; // Passer au niveau 2
+          console.log('Niveau augmenté à 2.');
+        }).catch((error) => console.error('Erreur lors de l\'augmentation au niveau 2 :', error));
+      } else if (currentLevel === 2 && currentPoints >= 13) {
+        this.firebaseService.addLevel(this.userData.mail).then(() => {
+          this.userData.level = 3; // Passer au niveau 3
+          console.log('Niveau augmenté à 3.');
+        }).catch((error) => console.error('Erreur lors de l\'augmentation au niveau 3 :', error));
+      } else {
+        console.log('Conditions non remplies pour augmenter le niveau.');
+      }
+    } else {
+      console.error('Données utilisateur non disponibles.');
     }
   }
 }

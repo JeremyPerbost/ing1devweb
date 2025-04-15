@@ -304,58 +304,35 @@ export class FirebaseService {
    */
   async updateUser(updatedUser: any): Promise<string> {
     try {
-      // Vérifie les champs obligatoires (sauf mail)
-      if (!updatedUser.password || !updatedUser.date_de_naissance || !updatedUser.name || 
-          !updatedUser.sexe || !updatedUser.categorie || !updatedUser.nom || !updatedUser.prenom) {
-        return "Tous les champs doivent être remplis";
+      // Vérifie les champs obligatoires
+      if (!updatedUser.mail) {
+        return "Email utilisateur manquant pour la mise à jour";
       }
   
-      if (updatedUser.nom.length > 16) {
-        return "Le nom ne doit pas dépasser 16 caractères";
-      }
-      if (updatedUser.prenom.length > 16) {
-        return "Le prénom ne doit pas dépasser 16 caractères";
-      }
-      if (updatedUser.password.length < 4 || updatedUser.password.length > 16) {
-        return "Le mot de passe doit comporter entre 4 et 16 caractères";
-      }
-      if (updatedUser.name.length > 16) {
-        return "Le pseudo ne doit pas dépasser 16 caractères";
-      }
+      const q = query(collection(this.db, 'user'), where('mail', '==', updatedUser.mail));
+      const querySnapshot = await getDocs(q);
   
-      const sqlInjectionPattern = /['";\-]/;
-      if (sqlInjectionPattern.test(updatedUser.password) || sqlInjectionPattern.test(updatedUser.name)) {
-        return "Les champs ne doivent pas contenir de caractères spéciaux";
+      if (!querySnapshot.empty) {
+        const userDocRef = querySnapshot.docs[0].ref;
+  
+        // Sélectionne uniquement les champs à mettre à jour
+        const userToUpdate = {
+          password: updatedUser.password,
+          date_de_naissance: updatedUser.date_de_naissance,
+          name: updatedUser.name,
+          sexe: updatedUser.sexe,
+          categorie: updatedUser.categorie,
+          nom: updatedUser.nom,
+          prenom: updatedUser.prenom,
+          level: updatedUser.level,
+          points: updatedUser.points
+        };
+  
+        await updateDoc(userDocRef, userToUpdate);
+        return "Utilisateur mis à jour avec succès";
+      } else {
+        return `Utilisateur avec l'email ${updatedUser.mail} introuvable`;
       }
-  
-      const birthDate = new Date(updatedUser.date_de_naissance);
-      const today = new Date();
-      if (birthDate >= today) {
-        return "La date de naissance doit être antérieure à aujourd'hui";
-      }
-  
-      if (!updatedUser.id) {
-        return "Identifiant utilisateur manquant pour la mise à jour";
-      }
-  
-      const userDocRef = doc(this.db, 'user', updatedUser.id);
-      
-      // Sélectionne uniquement les champs à mettre à jour
-      const userToUpdate = {
-        password: updatedUser.password,
-        date_de_naissance: updatedUser.date_de_naissance,
-        name: updatedUser.name,
-        sexe: updatedUser.sexe,
-        categorie: updatedUser.categorie,
-        nom: updatedUser.nom,
-        prenom: updatedUser.prenom,
-        level: updatedUser.level,
-        points: updatedUser.points
-      };
-  
-      await updateDoc(userDocRef, userToUpdate);
-      return "Utilisateur mis à jour avec succès";
-  
     } catch (e) {
       console.error("Erreur de mise à jour de l'utilisateur : ", e);
       return "Erreur de mise à jour de l'utilisateur";
@@ -598,6 +575,17 @@ emailjs.send("service_p65hfb5", "template_a2t96in", {
   updateObjet(id: string, data: any): Promise<void> {
     const docRef = doc(this.db, 'objet-maison', id); // change 'objet' selon ta collection
     return updateDoc(docRef, data);
+  }
+
+  async deleteObjet(objetId: string): Promise<void> {
+    try {
+      const objetDocRef = doc(this.db, 'objet-maison', objetId); // Référence au document
+      await deleteDoc(objetDocRef); // Supprime le document
+      console.log(`Document avec l'ID ${objetId} supprimé de la collection objet-maison.`);
+    } catch (error) {
+      console.error(`Erreur lors de la suppression du document avec l'ID ${objetId} :`, error);
+      throw error;
+    }
   }
 
   ///////Piece

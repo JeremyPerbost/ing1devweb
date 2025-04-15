@@ -17,11 +17,12 @@ export class BarreRechercheComponent implements OnInit {
   isSocialMode: boolean = false;
 
   categories1 = [
-    { Nom: 'Domotique' },
-    { Nom: 'Securité' },
-    { Nom: 'Lumière' },
-    { Nom: 'Energie' },
-    { Nom: 'Confort' }
+    { Nom: 'Eclairage' },
+    { Nom: 'Divertissement' },
+    { Nom: 'Electromenager' },
+    { Nom: 'Climat' },
+    { Nom: 'Divers' },
+    { Nom: 'Securite'},
   ];
 
   categories2 = [
