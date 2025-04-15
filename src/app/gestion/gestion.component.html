@@ -1,4 +1,4 @@
-<div *ngIf="issimple || iscomplexe">
+<div *ngIf="issimple || iscomplexe" class="gestion-container">
     <h2>Objets appairés à Domovia</h2>
     <div *ngIf="objets$ | async as objets; else loading" class="objets-grid">
         <div       class="objet-card" 
