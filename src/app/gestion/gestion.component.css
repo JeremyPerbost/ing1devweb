@@ -7,40 +7,29 @@
     padding: 20px;
   }
   
-  /* Conteneur principal */
-.gestion-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px; /* Espacement entre les éléments */
-  padding: 20px;
-}
-
-/* Titre */
-h2 {
-  margin-bottom: 20px;
-  font-size: 1.8em;
-  color: #333;
-}
+  /* Titre */
+  h2 {
+    margin-bottom: 20px;
+    font-size: 2em;
+    color: white;
+  }
   
   /* Conteneur des cartes */
   .objets-grid {
     display: flex;
-    flex-wrap: wrap; /* Permet aux cartes de passer à la ligne si nécessaire */
-    gap: 20px; /* Espacement entre les cartes */
-    justify-content: center; /* Centre les cartes horizontalement */
-    max-width: 1200px;
-    width: 100%;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    max-width: 800px;
   }
   
   /* Carte */
   .objet-card {
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 8px;
+    background: grey;
+    border-radius: 12px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    width: 300px;
+    width: 250px;
     text-align: center;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
@@ -66,31 +55,27 @@ label {
   display: inline-block; /* Assure que le label respecte les marges */
 }
 button{
-  background-color: #007bff; /* Couleur de fond */
-  color: white; /* Couleur du texte */
-  border: none; /* Pas de bordure */
-  border-radius: 5px; /* Coins arrondis */
-  padding: 10px 15px; /* Espacement interne */
+  background-color: #656565; /* Couleur de fond */
+  color: rgb(255, 255, 255); /* Couleur du texte */
+  border: 2px solid; /* Pas de bordure */
+  border-radius: 8px; /* Coins arrondis */
+  padding: 10px 20px; /* Espacement interne */
   text-align: center; /* Centrer le texte */
   text-decoration: none; /* Pas de soulignement */
   display: inline-block; /* Affichage en ligne */
   font-size: 16px; /* Taille de la police */
-  margin: 10px 0; /* Espacement vertical entre les boutons */
+  margin: 4px 2px; /* Marges */
   cursor: pointer; /* Curseur en main au survol */
-  transition: background-color 0.3s ease;
-}
-
-button:hover {
-  background-color: #0056b3;
 }
 
 :host label {
   font-size: 16px;
 }
-
-/* Texte */
-p {
-  margin: 5px 0;
-  font-size: 0.9em;
-  color: #555;
-}
+  /* Conteneur principal */
+  .gestion-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px; /* Espacement entre les éléments */
+    padding: 20px;
+  }
