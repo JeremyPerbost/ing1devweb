@@ -1,13 +1,32 @@
 <div class="search-container">
-    <input type="text" placeholder="Rechercher..." [(ngModel)]="searchQuery">
-    
-    <select [(ngModel)]="filterCategory">
-      <option value="">Toutes les catégories</option>
-      <option value="Maison">Maison</option>
-      <option value="Sécurité">Sécurité</option>
-      <option value="Énergie">Énergie</option>
-    </select>
-  
-    <button (click)="rechercher()">Rechercher</button>
-    <button routerLink="/page-objet">Page objet</button>
-  </div> 
+  <input
+    type="text"
+    [(ngModel)]="searchQuery"
+    placeholder="Rechercher par nom..."
+  />
+  <button (click)="search()">Rechercher</button>
+</div>
+
+<!-- Filtres par catégorie -->
+<div class="categories-container">
+  <label *ngFor="let category of categories">
+    <input
+      type="checkbox"
+      [value]="category"
+      (change)="onCategoryChange($event)"
+    />
+    {{ category }}
+  </label>
+</div>
+
+<!-- Affichage des résultats sous forme de cartes -->
+<div class="cards-container" *ngIf="objets.length > 0">
+  <div class="card" *ngFor="let objet of objets">
+    <h3>{{ objet.Nom }}</h3>
+    <p><strong>Catégorie:</strong> {{ objet.Categorie }}</p>
+    <p><strong>Informations:</strong> {{ objet.Informations || 'Aucune information disponible' }}</p>
+  </div>
+</div>
+<div *ngIf="objets.length === 0 && searchQuery">
+  <p>Aucun objet trouvé pour "{{ searchQuery }}"</p>
+</div>

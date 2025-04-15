@@ -2,7 +2,6 @@
     <h1>DOMOVIA</h1>
     <app-main-banner></app-main-banner>
     <h2>Profil de {{username}} </h2>
-
     <form (submit)="onSubmit()" class="form-example" novalidate>
         <h3>Informations Publiques</h3>
         <div class="form-group">
@@ -17,7 +16,6 @@
             <label for="userage">Date de naissance :</label>
             <input type="date" name="userage" id="userage" [(ngModel)]="userdate_naissance" required />
         </div>
-
         <div class="form-group">
             <label for="usersexe">Sexe :</label>
             <select name="usersexe" id="usersexe" [(ngModel)]="usersexe" required>
@@ -27,7 +25,6 @@
                 <option value="autre">Autre</option>
             </select>
         </div>
-
         <div class="form-group">
             <label for="usercategorie">Type de membre :</label>
             <select name="usercategorie" id="usercategorie" [(ngModel)]="usercategorie" required>

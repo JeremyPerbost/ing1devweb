@@ -1,36 +1,57 @@
-import { Component,HostListener } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { RouterModule } from '@angular/router'; // Importer RouterModule
+import { FirebaseService } from '../services/firebase.service';
+import { userService } from '../services/user.service';
 import { CommonModule } from '@angular/common'; // Importer CommonModule
-import { OptionBannerComponent } from "../banner-option/banner-option.component"; // Importer Subscription pour gérer les abonnements
-import { IconButtonComponent } from '../icon-button/icon-button.component';
-import { ViewEncapsulation } from '@angular/core';
-
-
+import { Subscription } from 'rxjs';
+import { ModifPhotoComponent } from "../modif-photo/modif-photo.component"; // Importer Subscription pour gérer les abonnements
 
 @Component({
   selector: 'app-main-banner',
-  standalone: true,
-  imports: [RouterModule, CommonModule, OptionBannerComponent, IconButtonComponent],
+  standalone: true, // Permet d'utiliser directement les modules dans imports
+  imports: [RouterModule, CommonModule, ModifPhotoComponent],
   templateUrl: './main-banner.component.html',
-  styleUrls: ['./main-banner.component.css'],
-  encapsulation: ViewEncapsulation.None // Désactive l'encapsulation
+  styleUrls: ['../../assets/styles.css', './main-banner.component.css']
 })
-export class MainBannerComponent {
-  isSidebarVisible: boolean = false;
+export class MainBannerComponent implements OnInit, OnDestroy {
+  est_connecter: boolean = false;
+  statut: string = '❓';
+  isBannerVisible: boolean = false;
+  nom_utilisateur: string = 'Inconnu';
+  private subscriptions: Subscription = new Subscription(); // Stocker les abonnements
+  photoURL: string = '../../assets/img/avatars/avatar_default.png'; // URL de la photo de profil
+  showModifPhoto: boolean =false; // Afficher le composant de modification de photo
 
-  // Méthode pour basculer l'état de la sidebar
-  toggleSidebar() {
-    this.isSidebarVisible = !this.isSidebarVisible;
+  constructor(private firebaseservice: FirebaseService, private userservice: userService) {}
+  ngOnInit() {
+    // S'abonner au statut de connexion
+    this.subscriptions.add(
+      this.userservice.est_connecter$.subscribe(est_connecter => {
+        this.est_connecter = est_connecter;
+        console.log('Statut de la connexion:', this.est_connecter);
+        if (this.est_connecter) {
+          this.statut = '✅';
+          this.subscriptions.add(
+            this.userservice.getCurrentUser().subscribe((user) => {
+              this.nom_utilisateur = user?.name || '';
+              this.photoURL = user?.photoURL || this.photoURL;
+            })
+          );
+        } else {
+          this.statut = '❌';
+          this.nom_utilisateur = 'Inconnu';
+          this.photoURL = '../../assets/img/avatars/avatar_default.png';
+        }
+      })
+    );
   }
-
-  // Fermer la sidebar si on clique en dehors
-  @HostListener('document:click', ['$event'])
-  onClickOutside(event: MouseEvent) {
-    const sidebar = document.querySelector('.sidebar');
-    const button = document.querySelector('#button');
-    if (sidebar && !sidebar.contains(event.target as Node) && !button?.contains(event.target as Node)) {
-      this.isSidebarVisible = false;
-    }
+  deconnexion() {
+    this.userservice.deconnexion(); // Déconnecter l'utilisateur
+  }
+  toggleBanner() {
+    this.isBannerVisible = !this.isBannerVisible; // Bascule la visibilité de la bannière
+  }
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe(); // Désabonnement pour éviter les fuites mémoire
   }
 }
-

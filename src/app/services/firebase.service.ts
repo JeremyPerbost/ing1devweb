@@ -27,10 +27,42 @@ export class FirebaseService {
     public mailService: mailService,
     public userService: userService
   ) {}
+  // Autres propriétés et méthodes existantes ici...
+
+  // Nouvelle méthode pour récupérer les objets filtrés
+  async getObjet(queryString: string, categories: string[]): Promise<any[]> {
+    const objetsCollection = collection(this.db, 'objet');  // Accède à la collection 'objet'
+    
+    let q = query(objetsCollection);
+
+    // Ajout de la condition de recherche sur le champ 'Informations'
+    if (queryString) {
+      q = query(q, where('Informations', '>=', queryString), where('Informations', '<=', queryString + '\uf8ff')); // Filtrage de texte sur 'Informations'
+    }
+
+    // Ajout des conditions de filtre pour les catégories
+    if (categories.length > 0) {
+      categories.forEach(category => {
+        q = query(q, where('Categorie', '==', category)); // Filtrer par catégorie
+      });
+    }
+
+    // Exécution de la requête
+    const querySnapshot = await getDocs(q);
+    const objets: any[] = [];
+    querySnapshot.forEach(doc => {
+      objets.push(doc.data());  // Récupérer les données des objets
+    });
+
+    return objets;
+  }
+
+  // Removed duplicate getObjet method to resolve the error.
+
   async authenticateUser(mail: string, password: string): Promise<boolean> {
     return this.userService.authenticateUser(mail, password);
   }
-
+  
   async updateProfilePhoto(userId: string, photoURL: string): Promise<void> {
     return this.userService.updateProfilePhoto(userId, photoURL);
   }
@@ -99,5 +131,24 @@ export class FirebaseService {
 
   async deconnexion(): Promise<void> {
     return this.userService.deconnexion();
+  }
+
+  async getObjetsByNomPrefix(prefix: string): Promise<any[]> {
+    const objetsCollection = collection(this.db, 'objet'); // Accède à la collection 'objet'
+
+    // Filtrer les objets dont le champ 'Nom' commence par le préfixe
+    const q = query(
+      objetsCollection,
+      where('Nom', '>=', prefix),
+      where('Nom', '<=', prefix + '\uf8ff') // '\uf8ff' est utilisé pour inclure tous les résultats commençant par le préfixe
+    );
+
+    const querySnapshot = await getDocs(q);
+    const objets: any[] = [];
+    querySnapshot.forEach((doc) => {
+      objets.push(doc.data()); // Récupérer les données des objets
+    });
+
+    return objets;
   }
 }

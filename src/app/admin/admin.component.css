@@ -4,6 +4,19 @@ table {
   border-collapse: collapse;
   margin: 20px 0;
 }
+button{
+  background-color: #656565; /* Couleur de fond */
+  color: rgb(255, 255, 255); /* Couleur du texte */
+  border: 2px solid; /* Pas de bordure */
+  border-radius: 8px; /* Coins arrondis */
+  padding: 10px 20px; /* Espacement interne */
+  text-align: center; /* Centrer le texte */
+  text-decoration: none; /* Pas de soulignement */
+  display: inline-block; /* Affichage en ligne */
+  font-size: 16px; /* Taille de la police */
+  margin: 4px 2px; /* Marges */
+  cursor: pointer; /* Curseur en main au survol */
+}
 
 /* Adaptation pour les petits écrans (moins de 600px de largeur) */
 @media screen and (max-width: 600px) {
