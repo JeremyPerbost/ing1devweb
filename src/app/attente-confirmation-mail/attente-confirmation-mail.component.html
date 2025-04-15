@@ -1,7 +1,21 @@
-<body>
-    <h1>DOMOVIA</h1>
-    <app-main-banner></app-main-banner>
-    <h1 style="background-color: rgba(255, 230, 0, 0.463)">Veuillez confirmer l'inscription en répondant au mail qui vous a été envoyé
-    </h1>
-    <app-pied-de-page></app-pied-de-page>
-</body>
+
+<app-main-banner></app-main-banner>
+
+<div id="main">
+    <div class="confirmation-container">
+        <h1>Confirmation de l'adresse mail</h1>
+        <p *ngIf="!message">Cliquez sur le bouton ci-dessous pour valider votre adresse email.</p>
+      
+        <button (click)="confirmerInscription()" [disabled]="loading">
+          {{ loading ? 'Validation en cours...' : 'Confirmer mon email' }}
+        </button>
+      
+        <p *ngIf="message">{{ message }}</p>
+      
+        <a *ngIf="message.includes('succès')" routerLink="/identifier/connexion">
+          Se connecter
+        </a>
+      </div>
+</div>
+
+<app-pied-de-page></app-pied-de-page>

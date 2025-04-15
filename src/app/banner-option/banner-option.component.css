@@ -3,10 +3,19 @@
   list-style: none;
   display: flex;
   align-items: center;
-  gap: 40px;
-  padding: 0;
+  justify-content: space-between; /* Sépare gauche et droite */
+  padding: 0 20px;
   margin: 0;
-  justify-content: space-between; /* Espace entre les éléments */
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+/* Nouveaux groupes de navigation */
+.navbar-left,
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 40px;
 }
 
 /* Supprimer display:inline-block car Flexbox gère déjà l'alignement */
@@ -34,7 +43,7 @@
 }
 
 /* Style des liens de droite (Se connecter / Se déconnecter) */
-.navbar li a.right {
+.navbar .right {
   background-color: #007bff;
   border-radius: 20px;
   padding: 12px 20px;
@@ -44,10 +53,13 @@
   transition: background-color 0.3s ease, transform 0.3s ease;
   display: inline-block;
   cursor: pointer;
+  justify-content: flex-end;
 }
 
 /* Effet au survol */
-.navbar li a.right:hover {
+.navbar li a.right:hover,
+.navbar li a.se-deconnecter:hover,
+.navbar li a.se-connecter:hover {
   background-color: #0056b3;
   transform: scale(1.05);
 }
@@ -66,6 +78,16 @@
   object-fit: cover;
   transition: transform 0.3s ease;
   cursor: pointer;
+}
+
+/* Ne pas afficher la photo de profil sur mobile quand l'utilisateur n'est pas connecté */
+.mobil .profile-photo {
+  display: none;
+}
+
+/* Afficher la photo de profil sur mobile si l'utilisateur est connecté */
+.mobil .est_connecter .profile-photo {
+  display: block;
 }
 
 /* Effet de survol sur l'image de profil */
@@ -89,7 +111,7 @@
   display: block;
 }
 
-.logo-mobil{
+.logo-mobil {
   display: none;
 }
 
@@ -102,10 +124,21 @@ a {
   .navbar {
     flex-direction: column;
     gap: 20px;
+    justify-content: center; /* Centre les éléments */
+    align-items: center;
+  }
+
+  .navbar-left,
+  .navbar-right {
+    flex-direction: column;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
   }
 
   .navbar li a.link-nav {
-    font-size: 1.2rem;  /* Plus petit sur mobile */
+    font-size: 1.2rem; /* Plus petit sur mobile */
     color: black;
   }
 
@@ -121,34 +154,21 @@ a {
   }
 
   .logo-mobil {
-    width: 80%;  /* Ajuste la taille de l'image pour les petits écrans */
+    width: 80%; /* Ajuste la taille de l'image pour les petits écrans */
     max-width: 200px;
     display: block;
     align-items: center;
   }
 
-  /* Style du fond sombre */
   .overlay {
     display: block;
   }
 
-  .pc {
+  .mobil .profile-photo {
+    display: block;
+  }
+
+  .pc-right .profile-photo {
     display: none;
   }
 }
-
-/* Styles pour PC */
-@media screen and (min-width: 749px) {
-  .logo-mobil {
-    display: none;  /* Masquer le logo mobile sur PC */
-  }
-
-  .pc {
-    display: block;  /* Afficher les éléments de PC sur grand écran */
-  }
-}
-
-
-
-
-  

@@ -22,7 +22,7 @@
               {{user.points}}
         </td>
         <td>
-            <button *ngIf="user.level<=-2" (click)="Valider_Inscription(user.mail, user.level)">valider l'inscription</button>
+            <button *ngIf="user.level<=-2" (click)="Valider_Inscription(user.mail)">valider l'inscription</button>
             <button *ngIf="user.level<=2" (click)="ModifierProfil(user.mail)">Modifier le profil</button>
         </td>
       </tr>

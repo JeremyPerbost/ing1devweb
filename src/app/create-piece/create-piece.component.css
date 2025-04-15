@@ -1,68 +1,78 @@
-/* Conteneur principal pour centrer le contenu */
-.objets-container {
+.create-piece {
     display: flex;
     flex-direction: column;
     align-items: center;
-    text-align: center;
-    padding: 20px;
-  }
-  button{
-    background-color: #656565; /* Couleur de fond */
-    color: rgb(255, 255, 255); /* Couleur du texte */
-    border: 2px solid; /* Pas de bordure */
-    border-radius: 8px; /* Coins arrondis */
-    padding: 10px 20px; /* Espacement interne */
-    margin: 10px 0; /* Marges */
-    text-align: center; /* Centrer le texte */
-    text-decoration: none; /* Pas de soulignement */
-    display: inline-block; /* Affichage en ligne */
-    font-size: 16px; /* Taille de la police */
-    margin: 4px 2px; /* Marges */
-    cursor: pointer; /* Curseur en main au survol */
-  }
-  /* Titre */
-  h2 {
-    margin-bottom: 20px;
-    font-size: 2em;
-    color: white;
-  }
-  
-  /* Conteneur des cartes */
-  .objets-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
     justify-content: center;
-    max-width: 800px;
-  }
-  /* Carte */
-  .objet-card {
-    background: grey;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
     padding: 20px;
-    width: 250px;
-    text-align: center;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 100%; /* On utilise 100% pour que ça occupe tout l'espace disponible sur mobile */
+    margin: auto;
   }
   
-  .objet-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  .create-piece h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
   }
   
-  /* Catégorie */
-  .categorie {
-    display: inline-block;
-    background: #007bc2;
-    color: white;
-    padding: 5px 10px;
-    border-radius: 20px;
-    font-size: 0.9em;
+  .create-piece select {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%; /* S'assurer que le select occupe toute la largeur disponible */
+    margin-bottom: 20px;
+    background-color: #fff;
+    transition: border-color 0.3s ease;
   }
-
-  .error-message {
-    color: red;
-    margin-top: 10px;
-    font-size: 14px;
+  
+  .create-piece select:focus {
+    border-color: #007BFF;
+    outline: none;
   }
+  
+  .create-piece button {
+    padding: 12px 20px;
+    background-color: #007BFF;
+    color: #fff;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%; /* Bouton de pleine largeur pour les petits écrans */
+  }
+  
+  .create-piece button:hover {
+    background-color: #0056b3;
+  }
+  
+  .create-piece button:active {
+    background-color: #003f7d;
+  }
+  
+  /* Media query pour les écrans mobiles */
+  @media (max-width: 600px) {
+    .create-piece {
+      padding: 15px;
+      max-width: 90%; /* Réduit la largeur pour mieux s'adapter sur les petits écrans */
+    }
+  
+    .create-piece h2 {
+      font-size: 20px; /* Taille de titre plus petite sur mobile */
+      margin-bottom: 15px;
+    }
+  
+    .create-piece select {
+      font-size: 14px; /* Police un peu plus petite sur mobile */
+      padding: 8px;
+    }
+  
+    .create-piece button {
+      font-size: 14px; /* Taille de police ajustée pour les petits écrans */
+      padding: 10px;
+    }
+  }
+  

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { jsPDF } from 'jspdf';
-import { Firestore, collection, getDocs } from '@angular/fire/firestore';
+import { FirebaseService } from '../firebase.service';
 import { Chart, registerables } from 'chart.js'; // Importer les éléments nécessaires
 import ChartDataLabels from 'chartjs-plugin-datalabels'; // Importer le plugin datalabels
 import html2canvas from 'html2canvas'; // Importer html2canvas
@@ -16,36 +16,31 @@ Chart.register(...registerables, ChartDataLabels);
   styleUrls: ['./generer-pdf.component.css', '../../assets/styles.css']
 })
 export class GenererPdfComponent {
-  constructor(private firestore: Firestore) {}
+  constructor(private firebase: FirebaseService) {}
+
+  // Générer une couleur aléatoire
+  private generateRandomColor(): string {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
 
   async generatePdf() {
     try {
-      // Récupérer les données de la collection "objet-maison"
-      const collectionRef = collection(this.firestore, 'objet-maison');
-      const querySnapshot = await getDocs(collectionRef);
-
-      // Extraire les données des objets
-      const objets: any[] = [];
-      querySnapshot.forEach((doc) => {
-        objets.push(doc.data());
-      });
-
-      // Récupérer les données de la collection "pieces"
-      const piecesCollectionRef = collection(this.firestore, 'pieces');
-      const piecesSnapshot = await getDocs(piecesCollectionRef);
-      const pieces: any[] = [];
-      piecesSnapshot.forEach((doc) => {
-        pieces.push(doc.data());
-      });
-
+      // Récupérer les données des collections via les nouvelles fonctions
+      const objets = await this.firebase.getObjetsWithDetails();
+      const pieces = await this.firebase.getPiecesWithDetails();
+      console.log('Objets récupérés :', objets); // Vérifiez les objets
+      console.log('Pièces récupérées :', pieces); // Vérifiez les pièces
       // Créer un PDF avec jsPDF
       const pdf = new jsPDF();
-
       // Ajouter le titre
       pdf.setFontSize(18);
       pdf.setFont('helvetica', 'bold');
       pdf.text('Consommation électrique mensuelle de Domovia', 10, 10);
-
       // Ajouter un espace après le titre
       pdf.setFontSize(12);
       let y = 25; // Position verticale initiale
@@ -54,13 +49,11 @@ export class GenererPdfComponent {
       objets.forEach((objet, index) => {
         pdf.text(`${index + 1}.`, 10, y);
         pdf.setFont('helvetica', 'normal');
-        pdf.text(`Nom: ${objet.Nom}`, 15, y);
+        pdf.text(`Nom: ${objet.id}`, 15, y);
         y += 8;
-        pdf.text(`Type: ${objet.Type}`, 15, y);
+        pdf.text(`Consommation électrique: ${objet.consommation} Watts`, 15, y);
         y += 8;
-        pdf.text(`Piece attribuée: ${objet.PieceID}`, 15, y);
-        y += 8;
-        pdf.text(`Consommation électrique: ${objet.Electricite} Watts`, 15, y);
+        pdf.text(`Pièce attribuée: ${objet.piece}`, 15, y);
         y += 15; // Espace entre les objets
 
         // Ajouter une nouvelle page si nécessaire
@@ -69,107 +62,25 @@ export class GenererPdfComponent {
           y = 20;
         }
       });
+      // Créer un graphique en camembert pour la consommation par objet
+      const objectLabels = objets.map(objet => objet.id);
+      const objectData = objets.map(objet => objet.consommation);
+      const objectColors = objets.map(() => this.generateRandomColor());
+      const objectCanvas = document.createElement('canvas');
+      objectCanvas.width = 400;
+      objectCanvas.height = 400;
+      document.body.appendChild(objectCanvas);
 
-      // Créer un graphique en camembert pour la consommation électrique par objet
-      const labels = objets.map((objet) => objet.Nom);
-      const data = objets.map((objet) => objet.Electricite);
-
-      // Créer un canvas et l'ajouter temporairement au DOM
-      const canvas = document.createElement('canvas');
-      canvas.width = 400;  // Largeur du canvas
-      canvas.height = 400; // Hauteur du canvas (doit être égale pour obtenir un cercle parfait)
-      document.body.appendChild(canvas); // Ajouter le canvas au DOM
-
-      const ctx = canvas.getContext('2d');
-
-      if (ctx) {
-        new Chart(ctx, {
+      const objectCtx = objectCanvas.getContext('2d');
+      if (objectCtx) {
+        new Chart(objectCtx, {
           type: 'pie',
           data: {
-            labels: labels,
+            labels: objectLabels,
             datasets: [{
-              label: 'Consommation électrique (Watts)',
-              data: data,
-              backgroundColor: ['#FF5733', '#33FF57', '#3357FF', '#FF33A6', '#FFC300'],
-            }]
-          },
-          options: {
-            responsive: true,
-            plugins: {
-              datalabels: {
-                display: true,
-                color: '#fff',  // Couleur des labels
-                font: {
-                  size: 45,  // Augmenter la taille des labels
-                  weight: 'bold'
-                },
-                formatter: (value: number) => `${value} Watts`, // Formater les labels avec la consommation
-              },
-              legend: {
-                display: true,
-                labels: {
-                  font: {
-                    size: 30, // Taille de la police de la légende
-                    weight: 'bold'
-                  },
-                  padding: 20 // Espacement autour des labels de la légende
-                }
-              },
-            }
-          }
-        });
-
-        // Attendre que le graphique soit rendu
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        // Utiliser html2canvas pour capturer le graphique sous forme d'image
-        html2canvas(canvas).then((imageCanvas) => {
-          const imgData = imageCanvas.toDataURL('image/png');
-
-          // Ajouter l'image du graphique au PDF
-          pdf.addPage();
-          pdf.setFontSize(16);
-          pdf.text('Diagramme de consommation électrique par objet :', 10, 10);
-          pdf.addImage(imgData, 'PNG', 10, 20, 180, 120); // Ajuster la taille de l'image
-
-          // Supprimer le canvas du DOM
-          document.body.removeChild(canvas);
-        }).catch((error) => {
-          console.error('Erreur lors de la capture du graphique :', error);
-          alert('Une erreur est survenue lors de la capture du graphique.');
-          document.body.removeChild(canvas); // Supprimer le canvas même en cas d'erreur
-        });
-      }
-
-      // Créer un graphique en camembert pour la consommation électrique par pièce
-      const pieceLabels = pieces.map(piece => piece.nom);
-      const pieceData: number[] = [];
-      const pieceColors = pieces.map(piece => piece.couleur);
-
-      // Calculer la consommation par pièce en fonction de la couleur et de la consommation des objets
-      pieces.forEach(piece => {
-        const consommationPiece = objets.filter(objet => objet.PieceID === piece.nom)
-                                        .reduce((sum, objet) => sum + objet.Electricite, 0);
-        pieceData.push(consommationPiece);
-      });
-
-      // Créer un canvas pour le graphique par pièce
-      const canvasPiece = document.createElement('canvas');
-      canvasPiece.width = 400;
-      canvasPiece.height = 400;
-      document.body.appendChild(canvasPiece);
-
-      const ctxPiece = canvasPiece.getContext('2d');
-
-      if (ctxPiece) {
-        new Chart(ctxPiece, {
-          type: 'pie',
-          data: {
-            labels: pieceLabels,
-            datasets: [{
-              label: 'Consommation électrique par pièce',
-              data: pieceData,
-              backgroundColor: pieceColors, // Utiliser la couleur de chaque pièce
+              label: 'Consommation par objet',
+              data: objectData,
+              backgroundColor: objectColors,
             }]
           },
           options: {
@@ -179,7 +90,7 @@ export class GenererPdfComponent {
                 display: true,
                 color: '#fff',
                 font: {
-                  size: 45,
+                  size: 14,
                   weight: 'bold'
                 },
                 formatter: (value: number) => `${value} Watts`,
@@ -188,7 +99,7 @@ export class GenererPdfComponent {
                 display: true,
                 labels: {
                   font: {
-                    size: 30,
+                    size: 14,
                     weight: 'bold'
                   },
                   padding: 20
@@ -199,30 +110,85 @@ export class GenererPdfComponent {
         });
 
         // Attendre que le graphique soit rendu
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 1000));
 
-        // Utiliser html2canvas pour capturer ce graphique sous forme d'image
-        html2canvas(canvasPiece).then((imageCanvasPiece) => {
-          const imgDataPiece = imageCanvasPiece.toDataURL('image/png');
-
-          // Ajouter l'image du graphique au PDF
-          pdf.addPage();
-          pdf.setFontSize(16);
-          pdf.text('Diagramme de consommation électrique par pièce :', 10, 10);
-          pdf.addImage(imgDataPiece, 'PNG', 10, 20, 180, 120); // Ajuster la taille de l'image
-
-          // Sauvegarder le PDF avec tous les graphiques
-          pdf.save('consommation-electrique.pdf');
-
-          // Supprimer le canvas du DOM
-          document.body.removeChild(canvasPiece);
-        }).catch((error) => {
-          console.error('Erreur lors de la capture du graphique :', error);
-          alert('Une erreur est survenue lors de la capture du graphique.');
-          document.body.removeChild(canvasPiece); // Supprimer le canvas même en cas d'erreur
-        });
+        // Capturer le graphique sous forme d'image
+        const objectImage = await html2canvas(objectCanvas);
+        const objectImgData = objectImage.toDataURL('image/png');
+        pdf.addPage();
+        pdf.setFontSize(16);
+        pdf.text('Diagramme de consommation par objet :', 10, 10);
+        pdf.addImage(objectImgData, 'PNG', 10, 20, 180, 120);
+        document.body.removeChild(objectCanvas);
       }
 
+      // Créer un graphique en camembert pour la consommation par pièce
+      const pieceLabels = pieces.map(piece => piece.nom);
+      const pieceData = pieces.map(piece => {
+        return objets
+          .filter(objet => objet.piece === piece.nom)
+          .reduce((sum, objet) => sum + objet.consommation, 0);
+      });
+      const pieceColors = pieces.map(() => this.generateRandomColor());
+
+      const pieceCanvas = document.createElement('canvas');
+      pieceCanvas.width = 400;
+      pieceCanvas.height = 400;
+      document.body.appendChild(pieceCanvas);
+
+      const pieceCtx = pieceCanvas.getContext('2d');
+      if (pieceCtx) {
+        new Chart(pieceCtx, {
+          type: 'pie',
+          data: {
+            labels: pieceLabels,
+            datasets: [{
+              label: 'Consommation par pièce',
+              data: pieceData,
+              backgroundColor: pieceColors,
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              datalabels: {
+                display: true,
+                color: '#fff',
+                font: {
+                  size: 14,
+                  weight: 'bold'
+                },
+                formatter: (value: number) => `${value} Watts`,
+              },
+              legend: {
+                display: true,
+                labels: {
+                  font: {
+                    size: 14,
+                    weight: 'bold'
+                  },
+                  padding: 20
+                }
+              }
+            }
+          }
+        });
+
+        // Attendre que le graphique soit rendu
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        // Capturer le graphique sous forme d'image
+        const pieceImage = await html2canvas(pieceCanvas);
+        const pieceImgData = pieceImage.toDataURL('image/png');
+        pdf.addPage();
+        pdf.setFontSize(16);
+        pdf.text('Diagramme de consommation par pièce :', 10, 10);
+        pdf.addImage(pieceImgData, 'PNG', 10, 20, 180, 120);
+        document.body.removeChild(pieceCanvas);
+      }
+
+      // Sauvegarder le PDF
+      pdf.save('consommation-electrique.pdf');
     } catch (error) {
       console.error('Erreur lors de la génération du PDF :', error);
       alert('Une erreur est survenue lors de la génération du PDF.');

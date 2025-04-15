@@ -1,63 +1,73 @@
-/* Conteneur principal pour centrer le contenu */
-.objets-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding: 20px;
+/* Container */
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 1rem;
+  background-color: #f9f9f9; /* Fond plus clair */
+  border-radius: 10px; /* Coins arrondis */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Ombre légère */
+}
+
+/* Labels */
+label {
+  display: block;
+  margin-top: 15px;
+  font-weight: bold;
+  font-size: 1rem; /* Légèrement plus grand */
+  color: #333; /* Texte plus foncé */
+}
+
+/* Inputs, select, button */
+input,
+select,
+button {
+  width: 100%;
+  padding: 0.75rem;
+  margin-top: 8px;
+  margin-bottom: 12px;
+  border-radius: 5px; /* Coins arrondis */
+  border: 1px solid #ddd; /* Bordure discrète */
+  font-size: 1rem; /* Taille de police plus uniforme */
+  background-color: #fff; /* Fond blanc pour les champs */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Transition douce pour interaction */
+}
+
+/* Bouton */
+button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease; /* Transition pour le hover */
+}
+
+button:hover {
+  background-color: #45a049; /* Changement de couleur au survol */
+}
+
+/* Amélioration du slider-container, mais ne modifie pas son agencement */
+.slider-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Range input */
+input[type="range"] {
+  flex: 1;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .container {
+    max-width: 100%; /* Prend toute la largeur possible sur petits écrans */
+    padding: 1rem; /* Même padding pour la version mobile */
   }
-  button{
-    background-color: #656565; /* Couleur de fond */
-    color: rgb(255, 255, 255); /* Couleur du texte */
-    border: 2px solid; /* Pas de bordure */
-    border-radius: 8px; /* Coins arrondis */
-    padding: 10px 20px; /* Espacement interne */
-    text-align: center; /* Centrer le texte */
-    text-decoration: none; /* Pas de soulignement */
-    display: inline-block; /* Affichage en ligne */
-    font-size: 16px; /* Taille de la police */
-    margin: 4px 2px; /* Marges */
-    cursor: pointer; /* Curseur en main au survol */
+
+  input,
+  select,
+  button {
+    padding: 0.5rem; /* Réduit un peu l'espacement pour les petits écrans */
   }
-  /* Titre */
-  h2 {
-    margin-bottom: 20px;
-    font-size: 2em;
-    color: white;
-  }
-  
-  /* Conteneur des cartes */
-  .objets-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-    max-width: 800px;
-  }
-  
-  /* Carte */
-  .objet-card {
-    background: grey;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    width: 250px;
-    text-align: center;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-  
-  .objet-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-  }
-  
-  /* Catégorie */
-  .categorie {
-    display: inline-block;
-    background: #007bc2;
-    color: white;
-    padding: 5px 10px;
-    border-radius: 20px;
-    font-size: 0.9em;
-  }
-  
+}

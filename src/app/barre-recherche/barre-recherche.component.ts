@@ -1,81 +1,86 @@
-import { Component, EventEmitter, Output } from '@angular/core';
-import { FirebaseService } from '../services/firebase.service';
+import { Component, EventEmitter, Output, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterModule,  Router, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-barre-recherche',
-  imports: [FormsModule, CommonModule],
+  standalone: true,
   templateUrl: './barre-recherche.component.html',
-  styleUrls: ['./barre-recherche.component.css']
+  styleUrls: ['./barre-recherche.component.css'],
+  imports: [FormsModule, RouterModule, CommonModule,]
 })
-export class BarreRechercheComponent {
-  searchQuery: string = '';  // Texte de recherche
-  selectedCategories: string[] = [];  // Catégories sélectionnées
-  categories = ['Domotique', 'Securité', 'Lumière', 'Energie', 'Confort'];  // Liste des catégories disponibles
+export class BarreRechercheComponent implements OnInit {
+  searchQuery: string = '';
+  selectedCategory: string = '';
+  selectedSexe: string = '';
+  isSocialMode: boolean = false;
 
-  filtersVisible: boolean = false;  // Contrôle la visibilité des filtres
-  objets: any[] = [];  // Liste des objets récupérés de Firebase
+  categories1 = [
+    { Nom: 'Domotique' },
+    { Nom: 'Securité' },
+    { Nom: 'Lumière' },
+    { Nom: 'Energie' },
+    { Nom: 'Confort' }
+  ];
 
-  @Output() searchEvent = new EventEmitter<{ searchQuery: string, selectedCategories: string[] }>();
+  categories2 = [
+    { Nom: 'enfant' },
+    { Nom: 'parent' },
+    { Nom: 'grand-parent' },
+    { Nom: 'invite' }
+  ];
+  
+  sexes = [
+    { sexe: 'autre' },
+    { sexe: 'femme' },
+    { sexe: 'homme' }
+  ];
 
-  constructor(private firebaseService: FirebaseService) {}
+    constructor(
+      private router: Router, 
+      private route: ActivatedRoute  // Injection de ActivatedRoute
+    ) {}
 
-  // Méthode pour gérer les changements de sélection des catégories (filtrage en temps réel)
-  onCategoryChange(event: any): void {
-    const category = event.target.value;
+  @Output() searchEvent = new EventEmitter<{ searchQuery: string, selectedCategories: string[], selectedSexes : string[] }>();
 
-    if (event.target.checked) {
-      this.selectedCategories.push(category);
-    } else {
-      const index = this.selectedCategories.indexOf(category);
-      if (index > -1) {
-        this.selectedCategories.splice(index, 1);
-      }
-    }
-    this.search();  // Lance une nouvelle recherche avec les nouveaux filtres
-  }
-
-  // Méthode pour émettre l'événement de recherche uniquement au clic du bouton
-  onSearchButtonClick(): void {
-    this.search();  // Lance une recherche lorsque l'utilisateur clique sur "Rechercher"
-  }
-
-  // Méthode pour effectuer la recherche avec les critères
-  search(): void {
-    const prefix = this.searchQuery.trim(); // Supprimer les espaces inutiles
-    if (!prefix && this.selectedCategories.length === 0) {
-      this.objets = []; // Si aucun critère n'est défini, réinitialiser les résultats
-      return;
-    }
-
-    this.firebaseService.getObjetsByNomPrefix(prefix).then((data) => {
-      console.log('Objets trouvés :', data); // Affiche les résultats dans la console
-
-      // Filtrer les objets par catégorie
-      this.objets = data.filter((objet: any) => {
-        const matchesCategory =
-          this.selectedCategories.length === 0 || // Si aucune catégorie n'est sélectionnée, tout est accepté
-          this.selectedCategories.includes(objet.Categorie);
-
-        return matchesCategory;
-      });
-    }).catch((error) => {
-      console.error('Erreur lors de la recherche :', error);
-      this.objets = [];
+  ngOnInit() : void{
+    this.route.url.subscribe(urlSegments => {
+      // Si l'URL contient 'social', on est en mode "social"
+      this.isSocialMode = urlSegments.some(segment => segment.path === 'social');
     });
   }
 
-  // Méthode privée pour émettre l'événement de recherche
+  onCategoryChange(): void {
+    // Réinitialiser la recherche si on choisit "Toutes les catégories"
+    if (this.selectedCategory === '') {
+      this.searchQuery = '';  // <- Réinitialisation du champ de recherche
+    }
+  
+    this.emitSearchEvent(); // Émettre l'événement mis à jour
+  }
+
+  onSexeChange(): void {
+    // Réinitialiser la recherche si on choisit "Toutes les catégories"
+    if (this.selectedSexe === '') {
+      this.searchQuery = '';  // <- Réinitialisation du champ de recherche
+    }
+  
+    this.emitSearchEvent(); // Émettre l'événement mis à jour
+  }
+
+  onSearchButtonClick(): void {
+    this.emitSearchEvent();
+  }
+
   private emitSearchEvent(): void {
     this.searchEvent.emit({
       searchQuery: this.searchQuery,
-      selectedCategories: this.selectedCategories
+      selectedCategories: this.selectedCategory === '' ? [] : [this.selectedCategory],
+      selectedSexes: this.selectedSexe === '' ? [] : [this.selectedSexe]
     });
   }
 
-  // Méthode pour basculer l'affichage des filtres
-  toggleFilters(): void {
-    this.filtersVisible = !this.filtersVisible;
-  }
 }
+
+

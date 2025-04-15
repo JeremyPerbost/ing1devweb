@@ -1,21 +1,10 @@
 /* Style de base pour le tableau */
 table {
   width: 100%;
+  border-radius: 7px;
+  background-color: white;
   border-collapse: collapse;
   margin: 20px 0;
-}
-button{
-  background-color: #656565; /* Couleur de fond */
-  color: rgb(255, 255, 255); /* Couleur du texte */
-  border: 2px solid; /* Pas de bordure */
-  border-radius: 8px; /* Coins arrondis */
-  padding: 10px 20px; /* Espacement interne */
-  text-align: center; /* Centrer le texte */
-  text-decoration: none; /* Pas de soulignement */
-  display: inline-block; /* Affichage en ligne */
-  font-size: 16px; /* Taille de la police */
-  margin: 4px 2px; /* Marges */
-  cursor: pointer; /* Curseur en main au survol */
 }
 
 /* Adaptation pour les petits écrans (moins de 600px de largeur) */
@@ -33,7 +22,6 @@ button{
     display: block; /* Transforme les cellules en blocs pour éviter qu'elles ne débordent */
     width: 100%; /* Chaque cellule prend toute la largeur */
   }
-
   /* Empêche les bordures de se chevaucher */
   th {
     background-color: #f2f2f2;
@@ -49,11 +37,11 @@ button{
 }
 
 th, td {
-  border: 1px solid #383838;
+  border: 1px solid #b3b3b3;
   padding: 8px;
 }
 
 th {
-  background-color: #252525;
+  background-color: #b3b3b3;
   text-align: left;
 }

@@ -1,119 +1,262 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Firestore, collection, addDoc, query, where, getDocs } from '@angular/fire/firestore'; // Import nécessaire pour les requêtes Firestore
+import { FirebaseService } from '../firebase.service';
+
+type Categories = 'Eclairage' | 'Divertissement' | 'Electromenager' | 'Climat' | 'Divers'| 'Securite';
+type ObjetTypes =
+  | 'Spot lumineux'
+  | 'Ampoule intelligente'
+  | 'Télévision'
+  | 'Enceinte Bluetooth'
+  | 'Réfrigérateur'
+  | 'Lave-vaisselle'
+  | 'Lave-linge'
+  | 'Thermostat'
+  | 'Climatiseur'
+  | 'Chauffage intelligent'
+  | 'TP-Link'
+  | 'Assistant vocal'
+  | 'Camera'
+
+interface Attributs {
+  connectivite: string;
+  connexion: string;
+  etat: string;
+  consommation: number;
+  maxluminosite?: number;
+  taille?: number;
+  puissanceBluetooth?: number;
+  temperature?: number;
+  mode?: string;
+  debit?: number;
+  id?: string;
+  volume?:number;
+  resolution?:number;
+}
 
 @Component({
   selector: 'app-create-object',
+  standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './create-object.component.html',
-  styleUrls: ['./create-object.component.css', '../../assets/styles.css']
+  styleUrls: ['./create-object.component.css', '../../assets/styles.css'],
 })
-export class CreateObjectComponent {
-  type: string = '';  // Pour stocker le type d'objet
-  nom: string = '';   // Pour stocker le nom de l'objet
-  id: string = '';   // Pour stocker l'ID de l'objet
-  constructor(private firestore: Firestore) {}
+export class CreateObjectComponent implements OnInit {
+  categorie: Categories = 'Eclairage';
+  type_objet: ObjetTypes = 'Spot lumineux';
+  piece: string = '';
 
-  // Fonction pour récupérer la valeur du type d'objet sélectionné
-  type_objet($event: Event): void {
-    const target = $event.target as HTMLSelectElement;  // Utiliser HTMLSelectElement
-    if (target) {
-      this.type = target.value;
-      console.log('Option sélectionnée :', this.type);
-    }
+  luminosite: number = 100;
+  tailleTelevision: number = 42;
+  puissanceBluetooth: number = 10;
+  temperatureRefrigerateur: number = 4;
+  temperatureThermostat: number = 21;
+  debitTpLink: number = 100;
+  modeClimatiseur: 'Refroidissement' | 'Chauffage' | 'Ventilation' = 'Refroidissement';
+  volumeAssistantVocal: number = 50;  // Volume pour l'assistant vocal
+  volumeTelevision: number = 50;  // Volume pour la télévision
+  volumeBluetooth: number = 50; // Volume pour l'enceinte Bluetooth
+  resolutionCamera: number = 1080;
+
+  objetsDisponibles: string[] = [];
+
+  objetsParCategorie: { [key in Categories]: string[] } = {
+    Eclairage: ['Spot lumineux', 'Ampoule intelligente'],
+    Divertissement: ['Télévision', 'Enceinte Bluetooth', 'Assistant vocal'], // Ajout de l'Assistant vocal
+    Electromenager: ['Réfrigérateur', 'Lave-vaisselle', 'Lave-linge'],
+    Climat: ['Thermostat', 'Climatiseur', 'Chauffage intelligent'],
+    Divers: ['TP-Link'],
+    Securite: ['Camera']
+  };
+  
+  // Mise à jour des attributs des objets pour inclure le volume pour "Enceinte Bluetooth" et "Assistant vocal"
+  attributsParObjet: { [key in ObjetTypes]: Attributs } = {
+    'Spot lumineux': {
+      connectivite: 'Wi-Fi',
+      connexion: 'Déconnecté',
+      etat: 'Éteint',
+      consommation: 8,
+      maxluminosite: 150,
+    },
+    'Ampoule intelligente': {
+      connectivite: 'Wi-Fi',
+      connexion: 'Déconnecté',
+      etat: 'Éteint',
+      consommation: 10,
+      maxluminosite: 80,
+    },
+    Télévision: {
+      connectivite: 'Wi-Fi',
+      connexion: 'Déconnecté',
+      etat: 'Éteint',
+      consommation: 100,
+      taille: 42,
+      puissanceBluetooth: 10,
+    },
+    'Enceinte Bluetooth': {
+      connectivite: 'Bluetooth',
+      connexion: 'Déconnecté',
+      etat: 'Éteint',
+      consommation: 5,
+      volume: 50, // Ajout du volume
+    },
+    Réfrigérateur: {
+      connectivite: 'Wi-Fi',
+      connexion: 'Déconnecté',
+      etat: 'Éteint',
+      consommation: 150,
+      temperature: 4,
+    },
+    'Lave-vaisselle': {
+      connectivite: 'Wi-Fi',
+      connexion: 'Déconnecté',
+      etat: 'Éteint',
+      consommation: 1200,
+    },
+    'Lave-linge': {
+      connectivite: 'Wi-Fi',
+      connexion: 'Déconnecté',
+      etat: 'Éteint',
+      consommation: 500,
+    },
+    Thermostat: {
+      connectivite: 'Wi-Fi',
+      connexion: 'Déconnecté',
+      etat: 'Éteint',
+      consommation: 3,
+      temperature: 21,
+    },
+    Climatiseur: {
+      connectivite: 'Wi-Fi',
+      connexion: 'Déconnecté',
+      etat: 'Éteint',
+      consommation: 2000,
+      mode: 'Refroidissement',
+    },
+    'Chauffage intelligent': {
+      connectivite: 'Wi-Fi',
+      connexion: 'Déconnecté',
+      etat: 'Éteint',
+      consommation: 800,
+    },
+    'TP-Link': {
+      connectivite: 'Wi-Fi',
+      connexion: 'Déconnecté',
+      etat: 'Éteint',
+      consommation: 10,
+      debit: 100,
+    },
+    'Assistant vocal': { // Définir les attributs de l'Assistant vocal
+      connectivite: 'Bluetooth',
+      connexion: 'Déconnecté',
+      etat: 'Éteint',
+      consommation: 10,
+      volume: 50, // Ajout du volume
+    },
+    'Camera': { // Définir les attributs de l'Assistant vocal
+      connectivite: 'Wi-Fi',
+      connexion: 'Bluetooth',
+      etat: 'Éteint',
+      consommation: 10,
+      resolution: 1080, // Ajout du volume
+    },
+  };
+
+  piecesDisponibles: string[] = [];
+
+  constructor(private firebaseService: FirebaseService) {}
+
+  ngOnInit() {
+    this.firebaseService.getPiecesRealtime((pieces) => {
+      this.piecesDisponibles = pieces.map(p => p.nom);
+    });
   }
 
-  // Fonction pour créer l'objet
-  async createObjet(): Promise<void> {
-    // Vérifier si le nom de l'objet est rempli
-    if (!this.nom.trim()) {
-      alert('Veuillez remplir le nom de l\'objet.');
-      return;
+  updateObjets() {
+    this.objetsDisponibles = this.objetsParCategorie[this.categorie] || [];
+    this.type_objet = this.objetsDisponibles[0] as ObjetTypes;
+  }
+
+  async ajouterObjetDansPiece() {
+    if (!this.type_objet || !this.piece) return;
+  
+    const objetChoisi = { ...this.attributsParObjet[this.type_objet] };
+  
+    // Ajout des attributs spécifiques
+    if (this.categorie === 'Eclairage') {
+      objetChoisi.maxluminosite = this.luminosite;
     }
-    // Vérifier si un type d'objet est sélectionné
-    if (!this.type) {
-      alert('Veuillez sélectionner un type d\'objet.');
-      return;
+    if (this.type_objet === 'Télévision') {
+      objetChoisi.volume = this.volumeTelevision;
     }
-    try {
-      // Récupérer tous les objets existants du même type
-      const collectionRef = collection(this.firestore, 'objet-maison');
-      const q = query(collectionRef, where('Type', '==', this.type));
-      const querySnapshot = await getDocs(q);
-      // Trouver le plus grand numéro existant pour ce type
-      let maxNumber = 0;
-      querySnapshot.forEach((doc) => {
-        const id = doc.data()['ID'] as string;
-        const match = id.match(new RegExp(`${this.type}(\\d+)$`)); 
-        if (match) {
-          const number = parseInt(match[1], 10);
-          maxNumber = Math.max(maxNumber, number); 
-        }
-      });
-
-      // Générer l'ID basé sur le plus grand numéro + 1
-      this.id = `${this.type}${maxNumber + 1}`;
-
-      // Ajouter l'objet à la collection "objet-maison" dans Firestore
-      //Etat : Allumé ou Eteint
-      //Connexion : connecter ou déconnecter
-      
-      let additionalFields = {};
-      switch (this.type.toLowerCase()) {
-        case 'lampe':
-          additionalFields = { 
-            Luminosite: 100,
-            Connectivite: "Wi-Fi",
-            Couleur: "#FF0000"
-          }; 
-
-          break;
-        case 'thermostat':
-          additionalFields = { 
-            Temperature: 20,
-            Connectivite: "Wi-Fi",
-            Batterie: 100,
-            TemperatureActuelle: 20,
-            TemperatureCible: 20,
-          }; 
-          break;
-        case 'assistant':
-          additionalFields = { 
-            Volume: 50,
-            VolumeCible: 50,
-            Connectivite: "Wi-Fi",
-            Batterie: 100,
-            Microphone: true
-          }; 
-          break;
-        case 'camera':
-          additionalFields = {
-            Resolution: '1080p',
-            Connectivite: "Filaire", 
-            Batterie: 100,  
-          };
-          break;
-        default:
-          console.warn('Type inconnu, aucun champ supplémentaire ajouté.');
+    if (this.type_objet === 'Enceinte Bluetooth') {
+      objetChoisi.volume = this.volumeBluetooth;
+    }
+    if (this.type_objet === 'Camera') {
+      objetChoisi.resolution = this.resolutionCamera;
+    }
+    if (this.type_objet === 'Réfrigérateur') {
+      objetChoisi.temperature = this.temperatureRefrigerateur;
+    }
+    if (this.type_objet === 'Thermostat' || this.type_objet === 'Chauffage intelligent') {
+      objetChoisi.temperature = this.temperatureThermostat;
+    }
+    if (this.type_objet === 'TP-Link') {
+      objetChoisi.debit = this.debitTpLink;
+    }
+    if (this.type_objet === 'Climatiseur') {
+      objetChoisi.mode = this.modeClimatiseur;
+    }
+    if (this.type_objet === 'Assistant vocal') {
+      objetChoisi.volume = this.volumeAssistantVocal;
+    }
+  
+    // Crée un identifiant unique pour l'objet (type + pièce)
+    const objetId = `${this.type_objet}_${this.piece}`;
+  
+    // Récupération de l'objet existant depuis Firebase
+    const objetExistant = await this.firebaseService.getObjetByIdMaison(objetId);
+  
+    if (objetExistant) {
+      // L'objet existe déjà, ajout d'un numéro de version
+      let version = 1;
+      while (await this.firebaseService.getObjetByIdMaison(`${objetId}_${version}`)) {
+        version++;
       }
-
-      await addDoc(collectionRef, { 
-        Nom: this.nom, 
-        Type: this.type, 
-        Etat: "Allumé", 
-        Connexion: "déconnecter",  
-        ID: this.id,
-        ...additionalFields // Ajouter les champs spécifiques au type
-      });
-      console.log("Objet ajouté avec succès :", this.nom, "de type", this.type, "avec ID", this.id);
-
-      // Réinitialiser les champs
-      this.nom = '';
-      this.type = '';
+      // Ajouter le numéro à l'objet
+      objetChoisi['id'] = `${objetId}_${version}`;
+    } else {
+      // L'objet n'existe pas, pas besoin de version
+      objetChoisi['id'] = objetId;
+    }
+  
+    // Ajout des infos générales
+    const objetAEnregistrer = {
+      type: this.type_objet,
+      categorie: this.categorie,
+      piece: this.piece,
+      ...objetChoisi,
+      dateMiseAJour: new Date().toISOString(),  // Ajoute la date de mise à jour
+    };
+  
+    // Enregistrement dans Firebase
+    try {
+      await this.firebaseService.addObjet(objetAEnregistrer);
+      console.log('Objet ajouté dans la pièce et en base :', objetAEnregistrer);
     } catch (error) {
       console.error('Erreur lors de l\'ajout de l\'objet :', error);
-      alert('Une erreur est survenue lors de la création de l\'objet.');
     }
+  
+    // Réinitialisation
+    this.categorie="Eclairage";
+    this.type_objet = 'Spot lumineux';
+    this.luminosite = 100;
+    this.tailleTelevision = 42;
+    this.puissanceBluetooth = 10;
+    this.temperatureRefrigerateur = 4;
+    this.temperatureThermostat = 21;
+    this.debitTpLink = 100;
+    this.modeClimatiseur = 'Refroidissement';
   }
 }

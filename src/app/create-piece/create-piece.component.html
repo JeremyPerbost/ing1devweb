@@ -1,24 +1,9 @@
-<div class="objet-card">
-  <h3>Créer une pièce</h3>
-
-  <!-- Champ pour le nom de la pièce -->
-  <input type="text" [(ngModel)]="nom" placeholder="Nom de la pièce" />
-
-  <!-- Champ pour la couleur de la pièce -->
-  <input type="color" [(ngModel)]="couleur" />
-
-  <!-- Bouton pour ajouter une pièce -->
-  <button (click)="ajouterPiece()">Créer</button>
-
-  <!-- Message d'erreur -->
-  <div *ngIf="errorMessage" class="error-message">
-    {{ errorMessage }}
-  </div>
-
-  <ul>
-    <li *ngFor="let piece of pieces$ | async">
-      <span [style.color]="piece.couleur">{{ piece.nom }}</span>
-      <button (click)="piece.id && supprimerPiece(piece.id)">Supprimer</button>
-    </li>
-  </ul>
+<div class="create-piece">
+    <h2>Créer une piece</h2>
+    <select [(ngModel)]="typePiece">
+        <option value="">Sélectionner un type de pièce</option>
+        <option *ngFor="let type of typesPieces" [value]="type">{{ type }}</option>
+      </select>
+      
+      <button (click)="ajouterPiece()">Créer</button>
 </div>

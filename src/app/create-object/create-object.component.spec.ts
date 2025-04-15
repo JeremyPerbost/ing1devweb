@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CreateObjectComponent } from './create-object.component';
+import { CreateObjetComponent } from './create-object.component';
 
 describe('CreateObjectComponent', () => {
   let component: CreateObjectComponent;
