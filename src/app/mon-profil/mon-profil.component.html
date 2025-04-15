@@ -1,5 +1,5 @@
 <app-main-banner></app-main-banner>
 <div id="main">
-    <app-profil *ngIf="userEmail !== null" [userEmail]="userEmail"></app-profil>
+    <app-profil *ngIf="userEmail !== null || userData !== null" [userEmail]="userEmail" [userData]="userData"></app-profil>
 </div>
 <app-pied-de-page></app-pied-de-page>

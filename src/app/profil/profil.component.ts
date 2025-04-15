@@ -16,10 +16,10 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./profil.component.css', '../../assets/styles.css']
 })
 export class ProfilComponent implements OnInit, OnDestroy {
-  userData: any = null;
+  @Input() userEmail: string | null = null; // Email de l'utilisateur à afficher
+  @Input() userData: any = null; // Données de l'utilisateur à afficher
   isEditingPhoto: boolean = false;
   @Input() UserId!: string | null;
-  @Input() userEmail: string | null = null; // Email de l'utilisateur à afficher
   private unsubscribe$ = new Subject<void>();  // Pour gérer l'abonnement aux observables
   isSocialMode: boolean = false;  // Variable pour différencier les vues
   isEditingProfil: boolean = false;
@@ -56,6 +56,9 @@ export class ProfilComponent implements OnInit, OnDestroy {
           console.error('Erreur lors du chargement de l\'utilisateur par email :', error);
         }
       });
+    } else if (this.userData) {
+      // Les données de l'utilisateur connecté sont déjà disponibles
+      console.log('Utilisateur connecté chargé :', this.userData);
     } else {
       // Mode "profil": afficher l'utilisateur connecté
       this.firebaseService.user$.pipe(takeUntil(this.unsubscribe$)).subscribe(user => {
