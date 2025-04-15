@@ -16,7 +16,7 @@ Pour correctement lancer/tester le projet, vous devez avoir certains prérequis
 
 - Installer e-mailjs pour gérer les mails : ``npm install emailjs-com --save``
 
--Installer le service de token unique pour les mail  :``npm install uuid``
+- Installer le service de token unique pour les mail  :``npm install uuid``
 
 - Installer le service pdf : ``npm install jspdf`` et aussi ``npm install chart.js``
 
