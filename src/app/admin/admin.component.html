@@ -12,19 +12,19 @@
     </thead>
     <tbody>
       <tr *ngFor="let user of users">
-        <td>{{ user.name }}</td>
-        <td>{{ user.mail }}</td>
-        <td>{{ user.etat }}</td>
-        <td>  <button (click)="changeLevel(user, -1)">-1</button>
-              {{ user.level <= 0 ? 0 : user.level }}
-              <button (click)="changeLevel(user, 1)">+1</button>
-              points: 
-              {{user.points}}
-        </td>
-        <td>
-            <button *ngIf="user.level<=-2" (click)="Valider_Inscription(user.mail)">valider l'inscription</button>
-            <button *ngIf="user.level<=2" (click)="ModifierProfil(user.mail)">Modifier le profil</button>
-        </td>
+        <td data-label="Pseudonyme">{{ user.name }}</td>
+          <td data-label="Mail">{{ user.mail }}</td>
+          <td data-label="État">{{ user.etat }}</td>
+          <td data-label="Niveau">
+            <button (click)="changeLevel(user, -1)">-1</button>
+            {{ user.level <= 0 ? 0 : user.level }}
+            <button (click)="changeLevel(user, 1)">+1</button>
+            points: {{ user.points }}
+          </td>
+          <td data-label="Actions">
+            <button *ngIf="user.level <= -2" (click)="Valider_Inscription(user.mail)">valider l'inscription</button>
+            <button *ngIf="user.level <= 2" (click)="ModifierProfil(user.mail)">Modifier le profil</button>
+          </td>
       </tr>
     </tbody>
   </table>
@@ -38,12 +38,12 @@
     </thead>
     <tbody>
       <tr *ngFor="let history_log of history_logs">
-        <td>{{history_log.name}}</td>
-        <td>{{history_log.mail}}</td>
-        <td [ngStyle]="{ color: history_log.type === 'connexion' ? 'green' : 'red' }">
-          {{ history_log.type }}
-        </td>
-        <td>{{ history_log.temps | date:'short' }}</td>
+        <td data-label="Pseudonyme">{{ history_log.name }}</td>
+          <td data-label="Mail">{{ history_log.mail }}</td>
+          <td data-label="Type" [ngStyle]="{ color: history_log.type === 'connexion' ? 'green' : 'red' }">
+            {{ history_log.type }}
+          </td>
+          <td data-label="Horaire">{{ history_log.temps | date:'short' }}</td>
       </tr>
     </tbody>    
   </table>
