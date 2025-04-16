@@ -80,6 +80,11 @@ export class ObjetAffichageComponent implements OnInit {
       return;
     }
 
+    // Convertir la date au format ISO si elle a été modifiée
+    if (this.editMode && this.objet['dateMiseAJour']) {
+      this.objet['dateMiseAJour'] = new Date(this.objet['dateMiseAJour']).toISOString();
+    }
+
     // Mettre à jour l'objet dans Firestore
     this.firebaseService.updateObjet(this.objet.id, this.objet).then(() => {
       console.log(`Objet avec l'ID ${this.objet.id} mis à jour avec succès.`);
@@ -87,12 +92,6 @@ export class ObjetAffichageComponent implements OnInit {
     }).catch(error => {
       console.error(`Erreur lors de la mise à jour de l'objet avec l'ID ${this.objet.id} :`, error);
     });
-  }
-
-  onEtatChange() {
-    if (this.objet.etat === 'Éteint') {
-      this.objet.connexion = 'Déconnecté';
-    }
   }
 
   supprimer(): void {
@@ -103,6 +102,89 @@ export class ObjetAffichageComponent implements OnInit {
         console.error(`Erreur lors de la suppression de l'objet avec l'ID ${this.objet.id} :`, error);
       });
     }
+  }
+
+  // Récupérer les clés des attributs de l'objet
+  getAttributKeys(): string[] {
+    return Object.keys(this.objet).filter(
+      key => key !== 'id' && key !== 'type' && key !== 'categorie' && key !== 'etat' && key !== 'connexion' && key !== 'dateMiseAJour'
+    );
+  }
+
+  // Déterminer si un attribut est éditable
+  isEditable(key: string): boolean {
+    const nonEditableKeys = ['piece', 'connectivite']; // Exemple : certains champs ne sont pas éditables
+    return !nonEditableKeys.includes(key);
+  }
+
+  // Définir le type d'entrée pour chaque attribut
+  getInputType(key: string): string {
+    const numberKeys = ['consommation', 'maxluminosite', 'taille', 'volume', 'temperature', 'debit', 'resolution'];
+    return numberKeys.includes(key) ? 'number' : 'text';
+  }
+
+  // Définir les valeurs minimales pour certains attributs
+  getMinValue(key: string): number | null {
+    const minValues: { [key: string]: number } = {
+      consommation: 1,
+      maxluminosite: 0,
+      taille: 1,
+      volume: 0,
+      temperature: -10,
+      debit: 1,
+      resolution: 240,
+    };
+    return minValues[key] || null;
+  }
+
+  // Définir les valeurs maximales pour certains attributs
+  getMaxValue(key: string): number | null {
+    const maxValues: { [key: string]: number } = {
+      consommation: 5000,
+      maxluminosite: 100,
+      taille: 100,
+      volume: 2000,
+      temperature: 50,
+      debit: 1000,
+      resolution: 4320,
+    };
+    return maxValues[key] || null;
+  }
+
+  // Gérer le changement de connexion
+  onConnexionChange(): void {
+    if (this.objet.connexion === 'Déconnecté') {
+      this.objet.etat = '?';
+    }
+  }
+
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    const options: Intl.DateTimeFormatOptions = {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    };
+    return date.toLocaleString('fr-FR', options);
+  }
+
+  // Convertir une date ISO en format compatible avec datetime-local
+  convertToDatetimeLocal(dateString: string): string {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Mois entre 1 et 12
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  }
+
+  // Convertir une date du champ datetime-local en format ISO
+  convertToISO(datetimeLocal: string): string {
+    return new Date(datetimeLocal).toISOString();
   }
 }
 

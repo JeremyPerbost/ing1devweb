@@ -9,11 +9,12 @@ import { CreateObjectComponent } from "../create-object/create-object.component"
 import { CreatePieceComponent } from '../create-piece/create-piece.component';
 import { GenererPdfComponent } from "../generer-pdf/generer-pdf.component";
 import { AdminComponent } from '../admin/admin.component';
+import { SupprimerPieceComponent } from "../supprimer-piece/supprimer-piece.component";
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterModule, MainBannerComponent, PiedDePageComponent, CommonModule, ObjetUtilisateurComponent, CreateObjectComponent, CreatePieceComponent, GenererPdfComponent, AdminComponent],
+  imports: [RouterModule, MainBannerComponent, PiedDePageComponent, CommonModule, ObjetUtilisateurComponent, CreateObjectComponent, CreatePieceComponent, GenererPdfComponent, AdminComponent, SupprimerPieceComponent],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css', '../../assets/styles.css']
 })

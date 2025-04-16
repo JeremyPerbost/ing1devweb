@@ -1,0 +1,8 @@
+<div class="delete-piece">
+  <h2>Supprimer une pièce</h2>
+  <select [(ngModel)]="pieceASupprimer">
+    <option value="">Sélectionner une pièce à supprimer</option>
+    <option *ngFor="let piece of piecesDisponibles" [value]="piece">{{ piece }}</option>
+  </select>
+  <button (click)="supprimerPiece()">Supprimer</button>
+</div>

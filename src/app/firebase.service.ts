@@ -742,4 +742,36 @@ emailjs.send("service_p65hfb5", "template_a2t96in", {
       throw e;
     }
   }
+
+  async supprimerPiece(nomPiece: string): Promise<void> {
+    try {
+      // Rechercher les objets associés à la pièce
+      const objetsQuery = query(collection(this.db, 'objet-maison'), where('piece', '==', nomPiece));
+      const objetsSnapshot = await getDocs(objetsQuery);
+
+      if (!objetsSnapshot.empty) {
+        // Supprimer tous les objets associés à la pièce
+        const deleteObjetsPromises = objetsSnapshot.docs.map(doc => deleteDoc(doc.ref));
+        await Promise.all(deleteObjetsPromises);
+        console.log(`Tous les objets associés à la pièce "${nomPiece}" ont été supprimés.`);
+      }
+
+      // Rechercher la pièce elle-même
+      const pieceQuery = query(collection(this.db, 'pieces'), where('nom', '==', nomPiece));
+      const pieceSnapshot = await getDocs(pieceQuery);
+
+      if (pieceSnapshot.empty) {
+        console.error(`La pièce "${nomPiece}" n'existe pas dans Firestore.`);
+        return;
+      }
+
+      // Supprimer la pièce
+      const pieceDocRef = pieceSnapshot.docs[0].ref;
+      await deleteDoc(pieceDocRef);
+      console.log(`La pièce "${nomPiece}" a été supprimée avec succès.`);
+    } catch (error) {
+      console.error(`Erreur lors de la suppression de la pièce "${nomPiece}" et de ses objets associés :`, error);
+      throw error;
+    }
+  }
 }
