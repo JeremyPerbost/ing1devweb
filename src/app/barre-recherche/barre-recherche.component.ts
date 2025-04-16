@@ -31,7 +31,6 @@ export class BarreRechercheComponent implements OnInit {
     { Nom: 'grand-parent' },
     { Nom: 'invite' }
   ];
-  
   sexes = [
     { sexe: 'autre' },
     { sexe: 'femme' },

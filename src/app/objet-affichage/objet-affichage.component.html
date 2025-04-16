@@ -133,6 +133,16 @@
     </p>
   </div>
 
+  <div *ngIf="hasAttribute('piece')" class="has-attribute">
+    <p>
+      <strong class="attribute-title">Pièce :</strong>
+      <span *ngIf="!editMode">{{ objet.piece }}</span>
+      <select *ngIf="editMode" [(ngModel)]="objet.piece">
+        <option *ngFor="let piece of piecesDisponibles" [value]="piece">{{ piece }}</option>
+      </select>
+    </p>
+  </div>
+
   <!-- Boutons d'action -->
   <div *ngIf="canEdit">
     <button (click)="toggleEdit()">{{ editMode ? 'Annuler' : 'Modifier' }}</button>

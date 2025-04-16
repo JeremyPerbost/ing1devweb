@@ -178,6 +178,24 @@ export class FirebaseService {
     this.deconnexion();
   }
 
+  async deleteUserByEmail(email: string): Promise<void> {
+    try {
+      const q = query(collection(this.db, 'user'), where('mail', '==', email));
+      const querySnapshot = await getDocs(q);
+  
+      if (!querySnapshot.empty) {
+        const userDocRef = querySnapshot.docs[0].ref;
+        await deleteDoc(userDocRef); // Supprime le document utilisateur
+        console.log(`Utilisateur avec l'email ${email} supprimé de Firestore.`);
+      } else {
+        console.error(`Utilisateur avec l'email ${email} introuvable.`);
+      }
+    } catch (error) {
+      console.error(`Erreur lors de la suppression de l'utilisateur avec l'email ${email} :`, error);
+      throw error;
+    }
+  }
+
   async getUsersSearch(searchQuery: string, selectedCategories: string[], selectedSexes: string[]): Promise<any[]> {
     try {
       let usersRef = collection(this.db, 'user');  // Référence à la collection 'user'
@@ -507,16 +525,20 @@ emailjs.send("service_p65hfb5", "template_a2t96in", {
   //ObjetMaison
   async getObjetByIdMaison(id: string): Promise<any> {
     try {
-      const docRef = doc(this.db, 'objet-maison', id);
-      const objetSnap = await getDoc(docRef);
-      if (objetSnap.exists()) {
-        return { id: objetSnap.id, ...objetSnap.data() };
-      } else {
-        console.log("Objet introuvable");
+      // Rechercher le document correspondant au champ `id`
+      const q = query(collection(this.db, 'objet-maison'), where('id', '==', id));
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        console.log(`L'objet avec l'ID "${id}" n'existe pas dans Firestore.`);
         return null;
       }
+
+      // Retourner le premier document correspondant
+      const docSnap = querySnapshot.docs[0];
+      return { id: docSnap.id, ...docSnap.data() };
     } catch (e) {
-      console.error("Erreur getObjetById :", e);
+      console.error("Erreur lors de la récupération de l'objet par ID :", e);
       return null;
     }
   }
@@ -572,21 +594,51 @@ emailjs.send("service_p65hfb5", "template_a2t96in", {
     });
   }
 
-  updateObjet(id: string, data: any): Promise<void> {
-    const docRef = doc(this.db, 'objet-maison', id); // change 'objet' selon ta collection
-    return updateDoc(docRef, data);
-  }
-
-  async deleteObjet(objetId: string): Promise<void> {
+  async updateObjet(objetId: string, data: any): Promise<void> {
     try {
-      const objetDocRef = doc(this.db, 'objet-maison', objetId); // Référence au document
-      await deleteDoc(objetDocRef); // Supprime le document
-      console.log(`Document avec l'ID ${objetId} supprimé de la collection objet-maison.`);
+      // Rechercher le document correspondant au champ `id`
+      const q = query(collection(this.db, 'objet-maison'), where('id', '==', objetId));
+      const querySnapshot = await getDocs(q);
+  
+      if (querySnapshot.empty) {
+        console.error(`Le document avec le champ id "${objetId}" n'existe pas dans Firestore.`);
+        return;
+      }
+  
+      // Mettre à jour le premier document correspondant
+      const docRef = querySnapshot.docs[0].ref;
+      console.log(`Tentative de mise à jour du document avec le champ id "${objetId}".`);
+      await updateDoc(docRef, { ...data, dateMiseAJour: new Date().toISOString() });
+      console.log(`Document avec le champ id "${objetId}" mis à jour avec succès.`);
     } catch (error) {
-      console.error(`Erreur lors de la suppression du document avec l'ID ${objetId} :`, error);
+      console.error(`Erreur lors de la mise à jour du document avec le champ id "${objetId}" :`, error);
       throw error;
     }
   }
+  
+
+  async deleteObjet(objetId: string): Promise<void> {
+    try {
+      // Rechercher le document correspondant au champ `id`
+      const q = query(collection(this.db, 'objet-maison'), where('id', '==', objetId));
+      const querySnapshot = await getDocs(q);
+  
+      if (querySnapshot.empty) {
+        console.error(`Le document avec le champ id "${objetId}" n'existe pas dans Firestore.`);
+        return;
+      }
+  
+      // Supprimer le premier document correspondant
+      const docRef = querySnapshot.docs[0].ref;
+      console.log(`Tentative de suppression du document avec le champ id "${objetId}".`);
+      await deleteDoc(docRef);
+      console.log(`Document avec le champ id "${objetId}" supprimé de la collection objet-maison.`);
+    } catch (error) {
+      console.error(`Erreur lors de la suppression du document avec le champ id "${objetId}" :`, error);
+      throw error;
+    }
+  }
+  
 
   ///////Piece
 

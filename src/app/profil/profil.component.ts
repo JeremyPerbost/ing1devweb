@@ -116,13 +116,18 @@ export class ProfilComponent implements OnInit, OnDestroy {
   }
 
   deleteUser() {
-    if (confirm("Êtes-vous sûr de vouloir supprimer votre profil ?")) {
-      this.firebaseService.deleteUser().then(() => {
-        console.log('Utilisateur supprimé avec succès.');
-        this.router.navigate(['/home']);
-      }).catch(error => {
-        console.error('Erreur lors de la suppression de l\'utilisateur :', error);
-      });
+    if (confirm("Êtes-vous sûr de vouloir supprimer ce profil ?")) {
+      if (this.userData && this.userData.mail) {
+        this.firebaseService.deleteUserByEmail(this.userData.mail).then(() => {
+          console.log(`Utilisateur ${this.userData.mail} supprimé avec succès.`);
+            this.router.navigate(['/home']); // Redirige vers la page d'accueil
+            window.location.reload(); // Recharge la page après suppression
+        }).catch(error => {
+          console.error(`Erreur lors de la suppression de l'utilisateur ${this.userData.mail} :`, error);
+        });
+      } else {
+        console.error("Impossible de supprimer : email utilisateur introuvable.");
+      }
     }
   }
 

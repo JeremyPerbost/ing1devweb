@@ -213,7 +213,7 @@ export class CreateObjectComponent implements OnInit {
     }
   
     // Crée un identifiant unique pour l'objet (type + pièce)
-    const objetId = `${this.type_objet}_${this.piece}`;
+    const objetId = generateNormalizedId(this.type_objet, this.piece);
   
     // Récupération de l'objet existant depuis Firebase
     const objetExistant = await this.firebaseService.getObjetByIdMaison(objetId);
@@ -259,4 +259,10 @@ export class CreateObjectComponent implements OnInit {
     this.debitTpLink = 100;
     this.modeClimatiseur = 'Refroidissement';
   }
+}
+
+function generateNormalizedId(type: string, piece: string): string {
+  const normalize = (value: string) =>
+    value.trim().toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
+  return `${normalize(type)}_${normalize(piece)}`;
 }
