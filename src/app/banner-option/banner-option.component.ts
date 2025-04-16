@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 import { RouterModule } from '@angular/router'; // Importer RouterModule
 import { FirebaseService } from '../firebase.service';
 import { CommonModule } from '@angular/common'; // Importer CommonModule
@@ -20,8 +21,7 @@ export class OptionBannerComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription = new Subscription();
   photoURL: string = '../../assets/img/avatars/avatar_default.png';
   showModifPhoto: boolean = false;
-
-  constructor(private firebaseservice: FirebaseService) {}
+  constructor(private firebaseservice: FirebaseService, private router: Router) {}
 
   ngOnInit() {
     // S'abonner à l'état de connexion
@@ -46,6 +46,8 @@ export class OptionBannerComponent implements OnInit, OnDestroy {
 
   deconnexion() {
     this.firebaseservice.deconnexion();
+    this.router.navigate(['/home']);
+    window.location.reload();
   }
 
   ngOnDestroy() {

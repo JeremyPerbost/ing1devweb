@@ -46,7 +46,7 @@ export class InscriptionComponent {
       this.firebaseService.envoyer_mail(this.user.mail);
   
       // Réinitialiser le formulaire et rediriger l'utilisateur vers la page de connexion
-      this.router.navigate(['/identifier/connexion']);
+      this.router.navigate(['/connexion']);
       
       // Réinitialiser l'objet utilisateur
       this.user = {

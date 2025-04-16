@@ -217,7 +217,6 @@ export class CreateObjectComponent implements OnInit {
   
     // Récupération de l'objet existant depuis Firebase
     const objetExistant = await this.firebaseService.getObjetByIdMaison(objetId);
-  
     if (objetExistant) {
       // L'objet existe déjà, ajout d'un numéro de version
       let version = 1;
@@ -237,19 +236,26 @@ export class CreateObjectComponent implements OnInit {
       categorie: this.categorie,
       piece: this.piece,
       ...objetChoisi,
-      dateMiseAJour: new Date().toISOString(),  // Ajoute la date de mise à jour
+      dateMiseAJour: new Date().toISOString(), // Ajoute la date de mise à jour
     };
   
     // Enregistrement dans Firebase
     try {
       await this.firebaseService.addObjet(objetAEnregistrer);
       console.log('Objet ajouté dans la pièce et en base :', objetAEnregistrer);
+  
+      // Ajouter un point à l'utilisateur
+      const currentUserEmail = this.firebaseService.getCurrentUserEmail();
+      if (currentUserEmail) {
+        await this.firebaseService.addPoint(currentUserEmail);
+        console.log('Un point a été ajouté à l\'utilisateur.');
+      }
     } catch (error) {
       console.error('Erreur lors de l\'ajout de l\'objet :', error);
     }
   
     // Réinitialisation
-    this.categorie="Eclairage";
+    this.categorie = 'Eclairage';
     this.type_objet = 'Spot lumineux';
     this.luminosite = 100;
     this.tailleTelevision = 42;

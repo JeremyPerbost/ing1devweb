@@ -774,4 +774,29 @@ emailjs.send("service_p65hfb5", "template_a2t96in", {
       throw error;
     }
   }
+
+  async addPoint(email: string): Promise<void> {
+    try {
+      // Rechercher l'utilisateur par email dans la collection 'user'
+      const userQuery = query(collection(this.db, 'user'), where('mail', '==', email));
+      const userSnapshot = await getDocs(userQuery);
+  
+      if (userSnapshot.empty) {
+        console.error(`Utilisateur avec l'email "${email}" non trouvé.`);
+        return;
+      }
+  
+      const userDocRef = userSnapshot.docs[0].ref;
+      const userData = userSnapshot.docs[0].data();
+  
+      // Incrémenter les points
+      const currentPoints = userData['points'] || 0;
+      await updateDoc(userDocRef, { points: currentPoints + 1 });
+  
+      console.log(`Un point a été ajouté à l'utilisateur "${email}".`);
+    } catch (error) {
+      console.error(`Erreur lors de l'ajout d'un point à l'utilisateur "${email}" :`, error);
+      throw error;
+    }
+  }
 }
